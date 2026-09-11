@@ -14,11 +14,4 @@
   "vars": {
     "DELIVERY_TRIP_MODE": "round-trip"
   },
-
-  "secrets": {
-    "required": [
-      "OPENROUTESERVICE_API_KEY",
-      "DELIVERY_ORIGIN"
-    ]
-  }
 }
