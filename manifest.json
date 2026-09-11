@@ -1,0 +1,80 @@
+[
+  {
+    "slug": "brigadeiro-tradicional",
+    "name": "Brigadeiro Tradicional",
+    "category": "brigadeiro",
+    "image": "/images/products/brigadeiros/brigadeiro-tradicional.png"
+  },
+  {
+    "slug": "beijinho",
+    "name": "Beijinho",
+    "category": "brigadeiro",
+    "image": "/images/products/brigadeiros/beijinho.png"
+  },
+  {
+    "slug": "churros",
+    "name": "Churros",
+    "category": "brigadeiro",
+    "image": "/images/products/brigadeiros/churros.png"
+  },
+  {
+    "slug": "creme-brulee",
+    "name": "Crème Brûlée",
+    "category": "brigadeiro",
+    "image": "/images/products/brigadeiros/creme-brulee.png"
+  },
+  {
+    "slug": "ninho-com-nutella",
+    "name": "Ninho com Nutella",
+    "category": "brigadeiro",
+    "image": "/images/products/brigadeiros/ninho-com-nutella.png"
+  },
+  {
+    "slug": "ferrero-rocher",
+    "name": "Ferrero Rocher",
+    "category": "brigadeiro",
+    "image": "/images/products/brigadeiros/ferrero-rocher.png"
+  },
+  {
+    "slug": "maracuja",
+    "name": "Maracujá",
+    "category": "brigadeiro",
+    "image": "/images/products/brigadeiros/maracuja.png"
+  },
+  {
+    "slug": "cajuzinho",
+    "name": "Cajuzinho",
+    "category": "brigadeiro",
+    "image": "/images/products/brigadeiros/cajuzinho.png"
+  },
+  {
+    "slug": "bicho-de-pe",
+    "name": "Bicho de Pé",
+    "category": "brigadeiro",
+    "image": "/images/products/brigadeiros/bicho-de-pe.png"
+  },
+  {
+    "slug": "ninho",
+    "name": "Ninho",
+    "category": "brigadeiro",
+    "image": "/images/products/brigadeiros/ninho.png"
+  },
+  {
+    "slug": "pistache",
+    "name": "Pistache",
+    "category": "brigadeiro",
+    "image": "/images/products/brigadeiros/pistache.png"
+  },
+  {
+    "slug": "casadinho",
+    "name": "Casadinho",
+    "category": "brigadeiro",
+    "image": "/images/products/brigadeiros/casadinho.png"
+  },
+  {
+    "slug": "caixa-degustacao",
+    "name": "Caixa Degustação",
+    "category": "degustacao",
+    "image": "/images/products/degustacao/caixa-degustacao.png"
+  }
+]
