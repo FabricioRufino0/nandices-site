@@ -1,0 +1,15 @@
+.wordmark .brand-name {
+  display: block;
+  font: inherit;
+  letter-spacing: inherit;
+  white-space: nowrap;
+}
+
+.brand-name__whisk {
+  display: inline-block;
+  width: .25em;
+  height: .8em;
+  margin-inline: .015em .025em;
+  vertical-align: -.015em;
+  overflow: visible;
+}

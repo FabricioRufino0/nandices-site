@@ -10,15 +10,16 @@ try{
  await page.goto('http://localhost:5173');
  await expect(page.locator('h1')).toHaveCount(1);
  await expect(page.locator('.brand-hero img')).toHaveCount(0);
- assert.deepEqual(await page.locator('main > section').evaluateAll(sections=>sections.slice(0,5).map(e=>e.id||e.className)),['hero brand-hero','sobre','bolos','doces','quanto-pedir']);
+ assert.deepEqual(await page.locator('main > section').evaluateAll(sections=>sections.slice(0,6).map(e=>e.id||e.className)),['hero brand-hero','sobre','como-encomendar','bolos','doces','quanto-pedir']);
  assert.ok(!await page.locator('body').innerText().then(t=>t.includes('Se está no bolo')||t.includes('Bonito é importante')));
- await expect(page.locator('.cake-grid article')).toHaveCount(3);
- await expect(page.locator('.cake-grid img')).toHaveCount(3);
- await expect(page.locator('#bolos')).not.toContainText('Doce de Leite com Amendoim');
+ await expect(page.locator('.cake-grid article')).toHaveCount(4);
+ await expect(page.locator('.cake-grid img')).toHaveCount(4);
+ await expect(page.locator('#bolos')).toContainText('Doce de Leite com Amendoim Crocante');
  await expect(page.locator('.cake-pricing')).toContainText('1,5 kg');
  await expect(page.locator('.cake-pricing')).toContainText('85,00');
  await expect(page.locator('.sweet-grid article')).toHaveCount(12);
  const config=page.locator('#configurador');
+ await config.locator('.expandable-toggle').click();
  for(let q=50;q<=500;q+=50){
   await page.selectOption('#quantity',String(q));
   await expect(config.locator('.lot')).toHaveCount(q/50);
@@ -28,24 +29,25 @@ try{
   }
   const total=Array.from({length:q/50},(_,i)=>[95,110,135][i%3]).reduce((a,b)=>a+b,0);
   await expect(config.locator('.order-total')).toContainText(new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(total));
-  const message=new URL(await config.getByRole('link',{name:'Consultar minha encomenda'}).getAttribute('href')).searchParams.get('text');
-  assert.ok(message.includes(`Quantidade: ${q} doces`));
+  await expect(config.getByRole('button',{name:'Consultar minha encomenda'})).toBeEnabled();
  }
  await page.selectOption('#quantity','150');
  for(let i=0;i<3;i++)await page.selectOption(`#flavor-${i}`,i===2?'brigadeiro-tradicional':'ninho-com-nutella');
  for(const [i,c] of ['Pistache','Chocolate','Branquinho'].entries())await page.selectOption(`#cup-${i}`,c);
  await expect(config.locator('.order-total')).toContainText('315,00');
  await expect(config.locator('.summary-flavor')).toHaveCount(2);
- let message=new URL(await config.getByRole('link',{name:'Consultar minha encomenda'}).getAttribute('href')).searchParams.get('text');
+ await config.getByRole('button',{name:'Consultar minha encomenda'}).click();
+ let message=new URL(await page.getByRole('link',{name:'Combinar retirada'}).getAttribute('href')).searchParams.get('text');
  for(const text of ['100 Ninho com Nutella','50 com forminha Pistache','50 com forminha Chocolate','50 Brigadeiro Tradicional','315,00'])assert.ok(message.includes(text),text);
- await recordClick(config.getByRole('link',{name:'Consultar minha encomenda'}));
+ await expect(page.locator('#delivery-title')).toBeFocused();
  await page.selectOption('#quantity','50');
  await expect(page.locator('#flavor-0')).toHaveValue('ninho-com-nutella');
  await expect(config.locator('.order-total')).toContainText('110,00');
  await page.selectOption('#quantity','100');
  await expect(page.locator('#flavor-1')).toHaveValue('');
- await expect(config.getByRole('link',{name:'Consultar minha encomenda'})).toHaveCount(0);
+ await expect(config.getByRole('button',{name:'Consultar minha encomenda'})).toHaveCount(0);
  const planner=page.locator('#quanto-pedir');
+ await planner.locator('.expandable-toggle').click();
  for(const [id,min,max] of [['aniversario',150,200],['casamento',250,350],['corporativo',100,200],['formatura',150,200],['infantil',200,250],['batizado',200,250],['noivado',200,250],['confraternizacao',150,200]]){
   await page.selectOption('#event-type',id);await page.fill('#guests','40');await planner.getByRole('button',{name:'Calcular quantidades'}).click();
   await expect(planner.locator('.planner-result')).toContainText('4 kg');
@@ -66,7 +68,7 @@ try{
  await delivery.getByRole('button',{name:'Calcular frete',exact:true}).click();
  await expect(delivery.locator('.freight-feedback')).toContainText('Não conseguimos calcular o frete automaticamente');
  await expect(delivery.getByRole('link',{name:'Consultar entrega pelo WhatsApp'})).toBeVisible();
- await page.route('**/api/delivery',route=>route.fulfill({json:{estimatedCents:750,distanceKm:12.5,billableDistanceKm:12.5,tripMode:'one-way',destination:'Destino de teste no DF'}}));
+ await page.route('**/api/delivery',route=>route.fulfill({json:{status:'estimated',estimatedCents:750,distanceKm:12.5,billableDistanceKm:12.5,tripMode:'one-way',destination:'Destino de teste no DF',notice:'Valor sujeito à confirmação pela Nandices.'}}));
  await delivery.getByRole('button',{name:'Calcular frete',exact:true}).click();
  await expect(delivery.locator('.freight-result')).toContainText('7,50');await expect(delivery.locator('.freight-result')).toContainText('12,5 km');
  message=new URL(await delivery.getByRole('link',{name:'Consultar entrega pelo WhatsApp'}).getAttribute('href')).searchParams.get('text');assert.ok(message.includes('7,50'));
@@ -87,7 +89,7 @@ try{
   assert.ok(Math.abs(head.y)<1,`sticky ${width}`);
  }
  const events=await page.evaluate(()=>window.dataLayer.map(e=>e.event));
- for(const event of ['planner_completed','planner_to_configurator','whatsapp_configurador','freight_calculated','whatsapp_delivery'])assert.ok(events.includes(event),event);
+ for(const event of ['planner_completed','planner_to_configurator','configurator_to_delivery','freight_calculated','whatsapp_delivery'])assert.ok(events.includes(event),event);
  await page.locator('img').evaluateAll(imgs=>imgs.forEach(i=>i.loading='eager'));
  await page.waitForFunction(()=>Array.from(document.images).every(i=>i.complete));
  assert.deepEqual(await page.locator('img').evaluateAll(imgs=>imgs.filter(i=>i.naturalWidth===0).map(i=>i.src)),[]);
@@ -96,7 +98,7 @@ try{
  await page.waitForFunction(()=>Array.from(document.images).every(i=>i.complete));
  await page.screenshot({path:'docs/desktop.png',fullPage:true});await page.screenshot({path:'docs/hero.png'});
  await page.setViewportSize({width:390,height:844});await page.screenshot({path:'docs/mobile.png',fullPage:true});
- await page.selectOption('#quantity','150');for(let i=0;i<3;i++)await page.selectOption(`#flavor-${i}`,i===2?'brigadeiro-tradicional':'ninho-com-nutella');
+ await config.locator('.expandable-toggle').click();await page.selectOption('#quantity','150');for(let i=0;i<3;i++)await page.selectOption(`#flavor-${i}`,i===2?'brigadeiro-tradicional':'ninho-com-nutella');
  await page.selectOption('#cup-0','Pistache');await page.selectOption('#cup-1','Chocolate');await config.locator('.order-summary').scrollIntoViewIfNeeded();await page.screenshot({path:'docs/configurator-mobile.png'});
  assert.deepEqual(errors,[]);assert.deepEqual(consoleErrors,[]);
  console.log('PASS: 50–500, preços mistos, repetição, forminhas por lote, 8 eventos, transferência, mensagens, analytics, fallback/resultado frete, 5 larguras, âncoras, sticky, imagens e console.');

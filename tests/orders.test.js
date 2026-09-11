@@ -5,7 +5,7 @@ import {resizeLots,summarizeLots,planEvent} from '../src/lib/planning.js';
 import {QUANTITIES,CUPS} from '../src/data/commerce.js';
 import {sweets,cakes} from '../src/data/catalog.js';
 const lot=(flavorId,cup='Branquinho')=>({flavorId,cup});
-test('catálogo confirmado: 3 bolos, 12 doces e Cajuzinho tradicional',()=>{assert.equal(cakes.length,3);assert.equal(sweets.length,12);assert.equal(sweets.find(p=>p.id==='cajuzinho').category,'Tradicional');assert.ok(sweets.every(p=>p.description));assert.equal(sweets.filter(p=>p.featured).length,3)});
+test('catálogo confirmado: 4 bolos, 12 doces e Cajuzinho tradicional',()=>{assert.equal(cakes.length,4);assert.equal(sweets.length,12);assert.equal(sweets.find(p=>p.id==='cajuzinho').category,'Tradicional');assert.ok(sweets.every(p=>p.description));assert.equal(sweets.filter(p=>p.featured).length,3);const cake=cakes.find(p=>p.id==='doce-de-leite-amendoim');assert.equal(cake.name,'Doce de Leite com Amendoim Crocante');for(const ingredient of ['pão de ló','molhada no leite','doce de leite Itambé','amendoim caramelizado','brigadeiro de churros'])assert.ok(cake.description.includes(ingredient))});
 for(const quantity of QUANTITIES)test(`${quantity} doces: lotes, repetição, categorias e forminhas`,()=>{
  const lots=resizeLots([],quantity).map((_,i)=>lot(['ninho','churros','pistache'][i%3],CUPS[i%3]));
  const result=summarizeLots(lots);

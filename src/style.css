@@ -116,3 +116,57 @@ header{border-bottom-color:#d9d8d2}
 @font-face{font-family:'Cormorant Garamond Variable';font-style:normal;font-display:swap;font-weight:300 700;src:url('@fontsource-variable/cormorant-garamond/files/cormorant-garamond-latin-wght-normal.woff2') format('woff2')}
 @font-face{font-family:'Cormorant Garamond Variable';font-style:italic;font-display:swap;font-weight:300 700;src:url('@fontsource-variable/cormorant-garamond/files/cormorant-garamond-latin-wght-italic.woff2') format('woff2')}
 @font-face{font-family:'Manrope Variable';font-style:normal;font-display:swap;font-weight:200 800;src:url('@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2') format('woff2')}
+/* Ajustes pontuais: descoberta, planejamento recolhido e continuidade até entrega. */
+.custom-highlight{margin-top:30px;padding:22px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:24px}
+.custom-highlight p{margin:0;font-size:15px;max-width:620px}.custom-highlight strong{font-weight:600;color:var(--blue)}.custom-highlight a{flex-shrink:0}
+.expandable.section{display:block;padding-block:30px;margin-block:16px;border-block:1px solid var(--line)}
+.expandable>.eyebrow{margin-bottom:8px}.expandable>h2{margin:0}
+.expandable-toggle{display:flex;align-items:center;justify-content:space-between;gap:24px;width:100%;padding:8px 0;border:0;background:none;color:var(--navy);text-align:left;font:inherit;letter-spacing:inherit}
+.expandable-action{display:flex;align-items:center;gap:18px;font:12px var(--font-body,Manrope,sans-serif);letter-spacing:0;color:var(--blue);flex-shrink:0}
+.expandable-icon{font-size:28px;line-height:1}
+.expandable-panel{display:grid;grid-template-rows:0fr;visibility:hidden;opacity:0;transition:grid-template-rows .24s ease,opacity .2s ease,visibility 0s .24s}
+.expandable-panel.is-open{grid-template-rows:1fr;visibility:visible;opacity:1;transition:grid-template-rows .24s ease,opacity .2s ease,visibility 0s}
+.expandable-clip{overflow:hidden;min-height:0}
+.expandable-content{display:grid;grid-template-columns:1fr 1.35fr;gap:60px;padding:32px 6px 6px}
+.expandable-content>div{min-width:0}.expandable-content>div>p{font-size:15px;color:var(--muted)}
+.expandable.config{margin-bottom:40px}
+.instagram-feature{display:flex;align-items:center;justify-content:space-between;gap:36px;border-block:1px solid var(--line);padding-block:44px;margin-block:20px}
+.instagram-feature h2{margin-bottom:12px}.instagram-feature p:last-child{margin-bottom:0;max-width:520px;color:var(--muted)}
+.instagram-cta{font-size:16px;min-height:60px;flex-shrink:0}
+#delivery-title:focus-visible,#planner-title:focus-visible{outline:3px solid #bd7536;outline-offset:4px}
+@media(max-width:760px){.custom-highlight,.instagram-feature{align-items:flex-start;flex-direction:column;gap:18px}.expandable.section{padding:24px 22px;margin-block:12px}.expandable h2{font-size:36px}.expandable-action{gap:10px}.expandable-content{grid-template-columns:1fr;gap:22px;padding-top:22px}.instagram-cta{font-size:14px;max-width:100%;gap:16px}.instagram-feature{padding-block:32px}}
+/* Hierarquia compacta de descoberta e ajuda no catálogo. */
+.order-strip.section{display:flex;align-items:center;justify-content:space-between;gap:28px;padding-block:26px;border-bottom:1px solid var(--line)}
+.order-strip h2{font-size:29px;letter-spacing:-.6px;margin:0}
+.order-strip ol{display:flex;gap:42px;align-items:center;list-style:none;margin:0;padding:0}
+.order-strip li{display:flex;align-items:center;gap:10px;position:relative}
+.order-strip li+li::before{content:'→';position:absolute;left:-29px;color:var(--muted)}
+.order-strip li span{font-size:12px;color:var(--blue)}.order-strip li strong{font-size:14px;font-weight:550}
+.custom-highlight{padding:20px 24px;background:var(--cream);border:0;border-radius:3px;gap:20px}
+.custom-highlight p{font-size:16px;line-height:1.6;max-width:650px}.custom-highlight strong{font-weight:550;color:var(--navy)}
+.catalog-help{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-top:28px}
+.catalog-help h3{font-size:31px;margin:0 0 6px}.catalog-help p{font-size:14px;color:var(--muted);margin:0}
+.catalog-help .button{flex-shrink:0}
+.product-image{aspect-ratio:1;background:var(--photo)}
+.product-image img{object-fit:contain;object-position:50% 50%;transform:none}
+.product-image:hover img{transform:none}
+@media(max-width:760px){.order-strip.section{flex-direction:column;align-items:flex-start;gap:14px;padding-block:22px}.order-strip h2{font-size:27px}.order-strip ol{width:100%;justify-content:space-between;gap:22px}.order-strip li{gap:6px}.order-strip li strong{font-size:12px}.order-strip li span{font-size:10px}.order-strip li+li::before{left:-17px;font-size:12px}.custom-highlight{padding:20px}.custom-highlight p{font-size:15px}.catalog-help{align-items:flex-start;flex-direction:column;gap:18px}}
+/* Quarto sabor de bolo e exemplo real de docinhos personalizados. */
+@media(min-width:901px){.cake-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:46px 32px}}
+.personal-photo{margin:28px 0 0}.personal-photo img{width:100%;height:auto;aspect-ratio:4/3;object-fit:contain;background:var(--photo);border-radius:3px}
+.personal-photo figcaption{font-size:12px;line-height:1.6;color:var(--muted);margin-top:10px}
+/* Ritmo entre seções: recuos consistentes e respiro sem margens acumuladas. */
+.about.section{padding-block:64px}
+.cakes.section{padding-block:64px 40px}
+.sweets.section{padding-block:40px 48px}
+.about>div>p:last-child,.delivery-section>div>p:last-child{margin-bottom:0}
+.expandable.section{padding:24px 48px;margin-inline:auto}
+.expandable.config{margin-bottom:32px}
+.personal.section{padding-block:48px;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.personal-photo{margin-top:24px}
+.delivery-section.section{padding-block:48px}
+.instagram-feature.section{margin-block:0;padding-block:32px}
+.faq.section{padding-block:48px}
+@media(min-width:521px) and (max-width:900px){.cake-grid article{grid-template-rows:max-content max-content max-content 1fr}.cake-grid .text-link{align-self:start}}
+@media(min-width:761px) and (max-width:1050px){.expandable.section{padding-inline:30px}.personal.section{gap:32px}}
+@media(max-width:760px){.about.section{padding-block:48px}.cakes.section{padding-block:48px 32px}.sweets.section{padding-block:32px 40px}.expandable.section{padding:24px 22px;margin-inline:0}.personal.section{padding-block:40px;grid-template-columns:1fr;gap:24px}.delivery-section.section{padding-block:40px}.faq.section{padding-block:40px}}

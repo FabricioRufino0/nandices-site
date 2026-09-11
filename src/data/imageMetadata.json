@@ -11,6 +11,10 @@
     "width": 1254,
     "height": 1254
   },
+  "/images/products/brigadeiros/cajuzinho-studio": {
+    "width": 1254,
+    "height": 1254
+  },
   "/images/products/brigadeiros/cajuzinho": {
     "width": 1800,
     "height": 2400
@@ -23,13 +27,25 @@
     "width": 1254,
     "height": 1254
   },
+  "/images/products/brigadeiros/creme-brulee-studio": {
+    "width": 1254,
+    "height": 1254
+  },
   "/images/products/brigadeiros/creme-brulee": {
     "width": 1800,
     "height": 2400
   },
+  "/images/products/brigadeiros/ferrero-rocher-studio": {
+    "width": 1254,
+    "height": 1254
+  },
   "/images/products/brigadeiros/ferrero-rocher": {
     "width": 1800,
     "height": 2400
+  },
+  "/images/products/brigadeiros/maracuja-studio": {
+    "width": 1254,
+    "height": 1254
   },
   "/images/products/brigadeiros/maracuja": {
     "width": 1800,
@@ -40,6 +56,10 @@
     "height": 1254
   },
   "/images/products/brigadeiros/ninho": {
+    "width": 1254,
+    "height": 1254
+  },
+  "/images/products/brigadeiros/pistache-studio": {
     "width": 1254,
     "height": 1254
   },
@@ -55,6 +75,10 @@
     "width": 1122,
     "height": 1402
   },
+  "/images/products/bolos/bolo-doce-de-leite-amendoim-crocante": {
+    "width": 1122,
+    "height": 1402
+  },
   "/images/products/bolos/bolo-frutas-vermelhas": {
     "width": 1122,
     "height": 1402
@@ -62,5 +86,9 @@
   "/images/products/bolos/bolo-ninho-geleia-morango": {
     "width": 1122,
     "height": 1402
+  },
+  "/images/products/personalizados/docinhos-personalizados-futebol": {
+    "width": 1448,
+    "height": 1086
   }
 }

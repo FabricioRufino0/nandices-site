@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 import {readdir,writeFile} from 'node:fs/promises';
 const metadata={};
-for(const folder of ['brigadeiros','degustacao','bolos']) {
+for(const folder of ['brigadeiros','degustacao','bolos','personalizados']) {
  const dir=`public/images/products/${folder}`;
  for(const file of await readdir(dir)) {
   if(!file.endsWith('.png'))continue;

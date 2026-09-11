@@ -5,15 +5,16 @@ Site existente em React + Vite + JavaScript. A atualização aplica o briefing d
 ## Execução e verificação
 
 - `npm install`
-- `npm run dev` — http://localhost:5173; inclui a rota privada local `/api/delivery`.
+- `npm run dev` — http://localhost:5173; encaminha `/api` ao Worker local, sem consultar provedores.
+- Em outro terminal: `npx wrangler dev --local --ip 127.0.0.1 --port 8787` após o build; secrets locais apenas em `.dev.vars`.
 - `npm run build` — gera `dist/`; funciona sem `SITE_URL` e sem parâmetros de frete.
-- `npm test` — catálogo, lotes de 50–500, valores mistos, mensagens, oito eventos e Worker com Google simulado.
+- `npm test` — catálogo, lotes de 50–500, valores mistos, mensagens, oito eventos e Worker com openrouteservice simulado.
 - `node scripts/check-ui.mjs` — requer servidor ativo e Edge instalado; valida interface, mobile, header, âncoras, frete e analytics. Não envia mensagens de WhatsApp.
 - `node scripts/optimize-images.mjs` — gera WebP dos PNGs originais (incluindo os bolos e as fotos do pacote v4).
 
 ## Dados e regras
 
-`src/data/catalog.js` contém os três bolos atualmente disponíveis e doze brigadeiros confirmados. `src/data/commerce.js` centraliza preços em centavos, mínimo dos bolos, tamanhos de lote, forminhas e referências dos oito eventos.
+`src/data/catalog.js` contém quatro bolos atualmente disponíveis, incluindo Doce de Leite com Amendoim Crocante, e doze brigadeiros confirmados. `src/data/commerce.js` centraliza preços em centavos, mínimo dos bolos, tamanhos de lote, forminhas e referências dos oito eventos. Personalização é oferecida somente para docinhos, nos sabores Ninho e Bicho de Pé, com mínimo de 50 unidades e 45 dias de antecedência.
 
 O configurador trabalha com lotes de 50 entre 50 e 500 unidades. Cada lote tem sabor e forminha independentes; categoria e preço vêm do catálogo/configuração. Repetições são permitidas. A redução preserva os primeiros lotes e remove os excedentes; aumentar cria lotes sem sabor. O resumo agrupa sabores e forminhas e o envio só é liberado quando todos os lotes estão preenchidos. Total dos doces sem frete; confirmação no WhatsApp.
 
@@ -27,10 +28,10 @@ Reutilizado `window.dataLayer`, sem novo fornecedor: `whatsapp_header`, `whatsap
 
 ## Frete
 
-Frontend chama apenas `/api/delivery`. O Worker consulta Google Geocoding e Routes no servidor. Sem os parâmetros externos, responde com fallback para WhatsApp. Veja `docs/frete.md` para configurar; não há credenciais ou valores comerciais de frete no repositório.
+Frontend chama apenas `/api/delivery`. O Worker consulta openrouteservice em `api.heigit.org` no servidor. Sem os parâmetros externos, responde com fallback para WhatsApp. Veja `docs/frete.md` para configurar; não há credenciais ou endereço de origem no repositório.
 
 Arquivos alterados e validação estão em `docs/ajustes.md`; pendências atuais em `docs/pendencias.md`.
 
 ## Refinamento visual v4
 
-Fotos atualizadas a partir de nandices_codex_assets_v4.zip, incluindo os três bolos. Bolo de doce de leite com amendoim retirado por enquanto a pedido do usuário. Títulos em Cormorant Garamond e textos em Manrope, com fontes locais via Fontsource. Detalhes em `docs/ajustes-visuais-v4.md`.
+Fotos do pacote v4 complementadas com as referências enviadas em 11/09/2026: bolo de doce de leite com amendoim reincluído e exemplo de docinhos personalizados tratados no padrão azul de estúdio. A assinatura tem o fouet no lugar do i, reproduzido em SVG no componente BrandName a partir da referência oficial. Títulos em Cormorant Garamond e textos em Manrope, com fontes locais via Fontsource. `docs/ajustes-visuais-v4.md` registra a etapa anterior.

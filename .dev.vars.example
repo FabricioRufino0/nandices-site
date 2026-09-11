@@ -1,0 +1,8 @@
+# Copie para .dev.vars, lido somente pelo Wrangler. Nunca use VITE_.
+OPENROUTESERVICE_API_KEY=
+# Preencha com a origem privada confirmada; não publique este valor.
+DELIVERY_ORIGIN=
+# Preencher somente após aprovação da Maria Fernanda. Propostas: 14.4 e 6.20.
+VEHICLE_KM_PER_LITER=
+FUEL_PRICE=
+DELIVERY_TRIP_MODE=round-trip
