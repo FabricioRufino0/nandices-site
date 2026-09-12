@@ -12,7 +12,7 @@ test('SEO local e com domínio: canonical, sitemap, OG, JSON-LD e secrets fora d
   const probe={name:'privacy-probe',resolveId(id){if(id==='/privacy-probe.js')return '\0privacy-probe'},load(id){if(id==='\0privacy-probe')return 'globalThis.__privacyProbe = import.meta.env;'},transformIndexHtml(html){return html.replace('</head>','<script type="module" src="/privacy-probe.js"></script></head>')}};
   const server=await createServer({logLevel:'silent',plugins:[probe]});
   try{const result=await server.transformRequest('/privacy-probe.js');for(const key of privateFields){assert.ok(!JSON.stringify(server.config.env).includes(process.env[key]));assert.ok(!result.code.includes(process.env[key]));}}finally{await server.close()}
-  for(const domain of ['', 'https://nandices.example']){
+  for(const domain of ['', 'https://nandicesconfeitaria.com.br']){
    process.env.SITE_URL=domain;
    const result=await build({logLevel:'silent',plugins:[probe],build:{write:false}});
    const output=result.output;const html=String(output.find(x=>x.fileName==='index.html').source);

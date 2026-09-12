@@ -6,7 +6,7 @@ Atualização incremental do projeto React/Vite existente. Mantidos stack, depen
 
 A abertura contém somente a assinatura tipográfica existente da Nandices em azul e creme, sem foto de produto ou slogan. Logo depois vem Sobre a Nanda; em seguida, bolos, doces, planejador, configurador, degustação, qualidade, personalizados, encomenda, entrega, galeria, FAQ e contato.
 
-Catálogo confirmado: quatro bolos, preço R$ 85/kg e mínimo 1,5 kg; doze brigadeiros com descrições reais; Cajuzinho tradicional; preços de cento e meio cento. Caixa Degustação com 7 dias de antecedência. Doces personalizados com 45 dias e sabores Ninho/Bicho de Pé; bolos personalizados com prazo sob consulta.
+Catálogo confirmado: quatro bolos, preço R$ 90/kg e mínimo 1,5 kg; doze brigadeiros com descrições reais; Cajuzinho tradicional; preços de cento e meio cento. Caixa Degustação com 7 dias de antecedência. Doces personalizados com 45 dias; bolos personalizados com prazo sob consulta.
 
 Configurador por lotes de 50 até 500, com repetição de sabores, forminha independente por lote, categoria/preço derivados de dados centrais, resumo agrupado e mensagem contextualizada. Planejador para os oito eventos, mínimo comercial de bolo, arredondamento de doces para cima e transferência de quantidade ao configurador.
 

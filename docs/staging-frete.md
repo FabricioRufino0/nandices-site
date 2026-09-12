@@ -1,3 +1,5 @@
+> Registro histórico anterior à migração para CEP. Para o contrato e validação atuais, consulte [frete.md](frete.md). As exigências antigas de rua/número do destino não se aplicam.
+
 # Checklist de staging — frete
 
 Status: preparado, não executado. Sem publicação autorizada, chave real, origem completa e aprovação comercial, não iniciar testes externos. Nenhum endereço fictício deve ser registrado como teste real aprovado.

@@ -1,3 +1,5 @@
+> Registro histórico anterior à migração para CEP. Para o contrato e validação atuais, consulte [frete.md](frete.md). As exigências antigas de rua/número do destino não se aplicam.
+
 # Correções da revisão de frete
 
 ## Arquivos
