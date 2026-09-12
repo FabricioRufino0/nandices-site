@@ -1,5 +1,5 @@
 # Copie para .dev.vars, lido somente pelo Wrangler. Nunca use VITE_.
-OPENROUTESERVICE_API_KEY=
+MAPBOX_ACCESS_TOKEN=
 # Preencha com a origem privada confirmada; não publique este valor.
 DELIVERY_ORIGIN=
 # Preencher somente após aprovação da Maria Fernanda. Propostas: 14.4 e 6.20.

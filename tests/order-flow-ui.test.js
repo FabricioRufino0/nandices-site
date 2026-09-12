@@ -42,7 +42,7 @@ for(const width of [390,1440])test(`fluxo de encomenda e blocos expansíveis em 
   assert.match(message,/150 Churros/);assert.match(message,/forminha Branquinho/);assert.match(message,/330,00/);
   await page.emulateMedia({reducedMotion:'reduce'});assert.equal(await planner.locator('.expandable-panel').evaluate(el=>getComputedStyle(el).transitionDuration),'0s');
   assert.ok(!await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth));
-  assert.deepEqual(await page.locator('#sobre,#como-encomendar,#bolos,#doces,#quanto-pedir,#configurador,#degustacao,#personalizados,#entrega').evaluateAll(elements=>elements.map(e=>e.id)),['sobre','bolos','doces','quanto-pedir','configurador','degustacao','personalizados','entrega']);
+  assert.deepEqual(await page.locator('#sobre,#como-encomendar,#bolos,#doces,#quanto-pedir,#configurador,#degustacao,#personalizados,#entrega').evaluateAll(elements=>elements.map(e=>e.id)),['sobre','bolos','doces','quanto-pedir','configurador','entrega','degustacao','personalizados']);
   const photos=await page.locator('.sweet-grid img').evaluateAll(imgs=>imgs.map(img=>({fit:getComputedStyle(img).objectFit,position:getComputedStyle(img).objectPosition,ratio:img.width/img.height})));
   assert.equal(photos.length,6);assert.ok(photos.every(p=>p.fit==='contain'&&p.position==='50% 50%'&&Math.abs(p.ratio-1)<.01));
   for(const [category,count] of [['Gourmet',5],['Pistache',1],['Tradicionais',6]]){await page.getByRole('button',{name:category,exact:true}).click();await expect(page.locator('.sweet-grid article')).toHaveCount(count)}
@@ -51,7 +51,7 @@ for(const width of [390,1440])test(`fluxo de encomenda e blocos expansíveis em 
   const [popup]=await Promise.all([page.waitForEvent('popup'),cakeLink.click()]);await popup.close();
   await page.reload();await configToggle.click();await expect(page.locator('#quantity')).toHaveValue('150');await expect(page.locator('#flavor-0')).toHaveValue('churros');
   await plannerToggle.click();await expect(page.locator('#guests')).toHaveValue('40');
-  await planner.scrollIntoViewIfNeeded();await page.screenshot({path:`docs/order-flow-${width}.png`});
+  await planner.scrollIntoViewIfNeeded();
   assert.deepEqual(errors,[]);
  }finally{await browser?.close();await vite.close()}
 });

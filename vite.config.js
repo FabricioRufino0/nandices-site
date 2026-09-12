@@ -2,9 +2,9 @@ import {defineConfig,loadEnv} from 'vite';
 import {PHONE} from './src/lib/orders.js';
 export default defineConfig(({mode})=>{
  const env=loadEnv(mode,process.cwd(),'SITE_URL');
- const value=env.SITE_URL?.trim();
+ const value=env.SITE_URL?.trim() || 'https://nandicesconfeitaria.com.br';
  let origin;
- if(value){const url=new URL(value);if(url.protocol!=='https:')throw new Error('SITE_URL deve usar HTTPS');origin=url.origin;}
+ {const url=new URL(value);if(url.protocol!=='https:')throw new Error('SITE_URL deve usar HTTPS');origin=url.origin;}
  return {envPrefix:[],server:{proxy:{'/api':{target:'http://127.0.0.1:8787',changeOrigin:true,configure(proxy){
   proxy.on('proxyReq',(outgoing,incoming)=>{
    // Translate only same-origin browser requests; foreign origins stay rejected by the Worker.

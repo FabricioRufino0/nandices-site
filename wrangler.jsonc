@@ -14,4 +14,7 @@
   "vars": {
     "DELIVERY_TRIP_MODE": "round-trip"
   },
+  "ratelimits": [
+    { "name": "DELIVERY_RATE_LIMITER", "namespace_id": "1001", "simple": { "limit": 10, "period": 60 } }
+  ]
 }

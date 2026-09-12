@@ -24,7 +24,7 @@ test('Vite encaminha somente ao Worker; preserva rejeição cross-origin e fallb
 });
 test('frontend e configuração Vite não importam nem consultam provider',async()=>{
  const worker=await readFile('worker/delivery.js','utf8');
- const host=new URL(worker.match(/const ORS_BASE = '([^']+)'/)[1]).host;
+ const host='api.heigit.org';
  const files=['vite.config.js',...(await readdir('src',{recursive:true})).filter(p=>/\.(js|jsx)$/.test(p)).map(p=>`src/${p}`)];
- for(const path of files){const source=await readFile(path,'utf8');assert.ok(!source.includes(host),path);assert.doesNotMatch(source,/import[^;]*worker\//,path);assert.doesNotMatch(source,/Authorization\s*:/,path)}
+ for(const path of files){const source=await readFile(path,'utf8');assert.ok(!source.includes(host),path);assert.doesNotMatch(source,/api\.mapbox\.com|MAPBOX_ACCESS_TOKEN/,path);assert.doesNotMatch(source,/import[^;]*worker\//,path);assert.doesNotMatch(source,/Authorization\s*:/,path)}
 });

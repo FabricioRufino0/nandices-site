@@ -2,10 +2,11 @@ import {normalizeCep, FREIGHT_FALLBACK} from '../src/lib/cep.js';
 
 export const FALLBACK = FREIGHT_FALLBACK;
 export const ADDRESS_REVIEW = FREIGHT_FALLBACK;
-export const PRIVATE_BINDINGS = ['OPENROUTESERVICE_API_KEY', 'DELIVERY_ORIGIN'];
+export const PRIVATE_BINDINGS = ['MAPBOX_ACCESS_TOKEN', 'DELIVERY_ORIGIN'];
 
-const ORS_BASE = 'https://api.heigit.org';
-const reply = (body, status = 200) => Response.json(body, {status, headers: {'Cache-Control': 'no-store'}});
+const MAPBOX_GEOCODING = 'https://api.mapbox.com/search/geocode/v6/forward';
+const MAPBOX_DIRECTIONS = 'https://api.mapbox.com/directions/v5/mapbox/driving';
+const reply = (body, status = 200) => Response.json(body, {status, headers: {'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff'}});
 const failure = (httpStatus, review = false) => reply({status: review ? 'address_review_required' : 'unavailable', error: review ? ADDRESS_REVIEW : FALLBACK}, httpStatus);
 
 class DeliveryError extends Error {
@@ -25,7 +26,7 @@ function configuration(env) {
   return {efficiency, fuelPrice, tripMode: env.DELIVERY_TRIP_MODE};
 }
 
-async function orsJson(fetcher, url, options, signal) {
+async function providerJson(fetcher, url, options, signal) {
   let response;
   try {
     response = await fetcher(url, { ...options, signal });
@@ -81,98 +82,21 @@ async function viacepFetch(cep, fetcher, signal) {
   }
 }
 
-function isBrazilDF(properties) {
-  return properties?.country_a === 'BRA' && (['DF', 'BR-DF', 'Distrito Federal'].includes(properties.region_a) || properties.region === 'Distrito Federal');
-}
-
-function normalizeText(value) {
-  return String(value || '')
-    .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function destinationMatchesViaCEP(features, viaAddress) {
-  const seen = [];
-  const viaParts = normalizeText(viaAddress).split(' ');
-  for (const feature of features) {
-    const p = feature?.properties || {};
-    const label = normalizeText(p.label || '');
-    const coord = feature?.geometry?.coordinates;
-
-    if (!Array.isArray(coord) || coord.length < 2 || !Number.isFinite(coord[0]) || !Number.isFinite(coord[1])) continue;
-    if (!isBrazilDF(p)) continue;
-
-    let score = 0;
-    for (const token of viaParts) {
-      if (!token) continue;
-      if (label.includes(token)) score += 1;
-    }
-
-    seen.push({feature, score});
-  }
-
-  if (!seen.length) throw new DeliveryError(422, true, 'cep_not_found');
-
-  const winner = seen.sort((a, b) => b.score - a.score)[0];
-  if (winner.score < 2) throw new DeliveryError(422, true, 'cep_not_found');
-  return winner.feature;
-}
-
-async function geocodeOrigin(text, key, fetcher, signal) {
-  const url = new URL(`${ORS_BASE}/pelias/v1/search`);
-  url.search = new URLSearchParams({text, size: '5', 'boundary.country': 'BR', lang: 'pt-BR'}).toString();
-
-  const data = await orsJson(fetcher, url, {headers: {Authorization: key, Accept: 'application/json'}}, signal);
-  const features = data?.features;
-  if (!Array.isArray(features)) throw new DeliveryError(502, false, 'invalid_response');
-  if (!features.length) throw new DeliveryError(422, true, 'origin_not_found');
-
-  const best = features[0], p = best?.properties || {}, coordinates = best?.geometry?.coordinates;
-  const validScore = score => typeof score === 'number' && Number.isFinite(score) && score >= 0 && score <= 1;
-
-  if (!validScore(p.confidence) || p.confidence < 0.9 || features.slice(1).some(f => !validScore(f?.properties?.confidence) || p.confidence - f.properties.confidence < 0.1 - Number.EPSILON)) throw new DeliveryError(422, true, 'origin_confidence');
-  if (!isBrazilDF(p)) {
-    throw new DeliveryError(422, true, 'origin_region');
-  }
-  if (!['address', 'venue'].includes(p.layer) || p.accuracy !== 'point' || p.match_type !== 'exact') throw new DeliveryError(422, true, 'origin_precision');
-  if (best.geometry?.type !== 'Point' || !Array.isArray(coordinates) || coordinates.length !== 2 || !coordinates.every(Number.isFinite) || Math.abs(coordinates[0]) > 180 || Math.abs(coordinates[1]) > 90 || typeof p.label !== 'string' || !p.label.trim()) throw new DeliveryError(422, true, 'origin_geometry');
-
-  return {coordinates, label: p.label};
-}
-
-async function geocodeDestination(text, key, fetcher, signal, viaAddress) {
-  const url = new URL(`${ORS_BASE}/pelias/v1/search`);
-  url.search = new URLSearchParams({text, size: '5', 'boundary.country': 'BR', lang: 'pt-BR'}).toString();
-
-  const data = await orsJson(fetcher, url, {headers: {Authorization: key, Accept: 'application/json'}}, signal);
-  const features = data?.features;
-  if (!Array.isArray(features)) throw new DeliveryError(502, false, 'invalid_response');
-  if (!features.length) throw new DeliveryError(422, true, 'cep_not_found');
-
-  const chosen = destinationMatchesViaCEP(features, viaAddress);
-  const p = chosen?.properties || {};
-  const coordinates = chosen?.geometry?.coordinates;
-
-  if (!isBrazilDF(p)) {
-    throw new DeliveryError(422, true, 'destination_region');
-  }
-  if (!Array.isArray(coordinates) || coordinates.length !== 2 || !coordinates.every(Number.isFinite) || Math.abs(coordinates[0]) > 180 || Math.abs(coordinates[1]) > 90 || typeof p.label !== 'string' || !p.label.trim()) throw new DeliveryError(422, true, 'destination_geometry');
-
-  return {coordinates, label: p.label};
+function validPoint(feature) { const c = feature?.geometry?.coordinates; return feature?.geometry?.type === 'Point' && Array.isArray(c) && c.length === 2 && Number.isFinite(c[0]) && Number.isFinite(c[1]) && c[0] >= -180 && c[0] <= 180 && c[1] >= -90 && c[1] <= 90; }
+async function geocode(text, key, fetcher, signal, kind) {
+  const url = new URL(MAPBOX_GEOCODING); url.search = new URLSearchParams({q:text,country:'BR',language:'pt',autocomplete:'false',limit:'5',access_token:key}).toString();
+  const data = await providerJson(fetcher, url, {headers:{Accept:'application/json'}}, signal);
+  const feature = Array.isArray(data?.features) ? data.features.find(validPoint) : null;
+  if (!feature) throw new DeliveryError(422, true, kind);
+  return {coordinates:feature.geometry.coordinates};
 }
 
 async function routeDistance(origin, destination, key, fetcher, signal) {
-  const data = await orsJson(fetcher, `${ORS_BASE}/openrouteservice/v2/directions/driving-car/json`, {
-    method: 'POST',
-    headers: {Authorization: key, 'Content-Type': 'application/json', Accept: 'application/json'},
-    body: JSON.stringify({coordinates: [origin.coordinates, destination.coordinates], instructions: false, language: 'pt-br'})
-  }, signal);
-
-  const meters = data?.routes?.[0]?.summary?.distance;
-  if (!Number.isFinite(meters) || meters < 0) throw new DeliveryError(502, false, 'route_invalid_distance');
+  const path = `${origin.coordinates.join(',')};${destination.coordinates.join(',')}`;
+  const url = new URL(`${MAPBOX_DIRECTIONS}/${path}`); url.search = new URLSearchParams({access_token:key,overview:'false',steps:'false'}).toString();
+  const data = await providerJson(fetcher, url, {headers:{Accept:'application/json'}}, signal);
+  const meters = data?.code === 'Ok' ? data.routes?.[0]?.distance : null;
+  if (!Number.isFinite(meters) || meters <= 0) throw new DeliveryError(502, false, 'route_invalid_distance');
   return meters;
 }
 
@@ -181,11 +105,16 @@ export async function handleDelivery(request, env, fetcher = fetch) {
 
   const origin = request.headers.get('Origin');
   if (origin && origin !== new URL(request.url).origin) return failure(403);
-  if (!request.headers.get('Content-Type')?.includes('application/json')) return failure(415, true);
+  const contentType = request.headers.get('Content-Type')?.split(';')[0].trim().toLowerCase();
+  if (contentType !== 'application/json') return failure(415, true);
+  const length = Number(request.headers.get('Content-Length'));
+  if (Number.isFinite(length) && length > 4096) return failure(413, true);
+  const limiter = env.DELIVERY_RATE_LIMITER;
+  if (limiter && !(await limiter.limit({key: request.headers.get('CF-Connecting-IP') || 'unknown'})).success) return failure(429, true);
 
   try {
     const text = await request.text();
-    if (text.length > 4096) return failure(413, true);
+    if (new TextEncoder().encode(text).byteLength > 4096) return failure(413, true);
 
     let body;
     try {
@@ -203,17 +132,13 @@ export async function handleDelivery(request, env, fetcher = fetch) {
     const via = await viacepFetch(cep, fetcher, signal);
 
     // Destination: loose geocoding from the structured address obtained by ViaCEP.
-    const destination = await geocodeDestination(via.address, env.OPENROUTESERVICE_API_KEY, fetcher, signal, via.address);
+    const destination = await geocode(via.address, env.MAPBOX_ACCESS_TOKEN, fetcher, signal, 'destination_not_found');
 
     // Origin: the private environment address stays under strict origin validation.
-    const source = await geocodeOrigin(env.DELIVERY_ORIGIN, env.OPENROUTESERVICE_API_KEY, fetcher, signal);
+    const source = await geocode(env.DELIVERY_ORIGIN, env.MAPBOX_ACCESS_TOKEN, fetcher, signal, 'origin_not_found');
 
-    if (PRIVATE_BINDINGS.some(key => destination.label.includes(env[key]))) {
-      throw new DeliveryError(422, true, 'destination_private_match');
-    }
-
-    const outbound = await routeDistance(source, destination, env.OPENROUTESERVICE_API_KEY, fetcher, signal);
-    const inbound = config.tripMode === 'round-trip' ? await routeDistance(destination, source, env.OPENROUTESERVICE_API_KEY, fetcher, signal) : 0;
+    const outbound = await routeDistance(source, destination, env.MAPBOX_ACCESS_TOKEN, fetcher, signal);
+    const inbound = config.tripMode === 'round-trip' ? await routeDistance(destination, source, env.MAPBOX_ACCESS_TOKEN, fetcher, signal) : 0;
 
     const distanceKm = outbound / 1000;
     const billableDistanceKm = (outbound + inbound) / 1000;

@@ -31,3 +31,16 @@
 @media(max-width:760px){header{gap:10px}.header-cta{margin-left:auto}.header-instagram{min-width:40px;min-height:44px}.section-heading h2{font-size:38px}.section-tagline{font-size:23px}.contact{padding:40px 22px}.tasting-copy .section-tagline{font-size:23px}}
 @media(max-width:520px){.contact h2{font-size:36px;line-height:1.15}.contact>.button{width:100%;max-width:320px;min-width:0}.contact>p:not(.eyebrow){max-width:340px}.contact>p:last-child{margin-top:14px}}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.sweet-grid article:hover,.cake-grid article:hover,.tasting:hover,.sweet-grid article:hover .product-image img,.tasting:hover .tasting-photo img,.button:hover,.header-instagram:hover{transform:none}}
+
+/* Approved artwork: separate brand, image and interactive CTA. */
+.brand-hero{position:relative;display:block;min-height:0;padding:0;overflow:hidden;background:#f8f5ef}
+.brand-hero::before,.brand-hero::after{content:none}
+.brand-hero .wordmark{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;animation:none}
+.brand-hero picture{display:block}
+.brand-hero__image{display:block;width:100%;height:auto;aspect-ratio:3/1;object-fit:cover;object-position:center}
+.brand-hero__actions{display:flex;justify-content:center;padding:20px 22px}
+@media(max-width:600px){
+ .brand-hero .wordmark{position:static;width:auto;height:auto;margin:0;padding:24px 22px;overflow:visible;clip-path:none;white-space:normal;color:var(--blue);font-size:clamp(64px,12vw,88px);line-height:1}
+ .brand-hero .wordmark span{font-size:11px;letter-spacing:.4em;margin-top:12px}
+ .brand-hero__image{height:clamp(290px,64vw,430px);aspect-ratio:auto;object-fit:cover;object-position:right center}
+}

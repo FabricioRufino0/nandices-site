@@ -17,10 +17,9 @@ test('SEO local e com domínio: canonical, sitemap, OG, JSON-LD e secrets fora d
    const result=await build({logLevel:'silent',plugins:[probe],build:{write:false}});
    const output=result.output;const html=String(output.find(x=>x.fileName==='index.html').source);
    const sitemap=output.find(x=>x.fileName==='sitemap.xml');
-   if(domain){assert.ok(html.includes(`rel="canonical" href="${domain}/"`));assert.ok(html.includes(`content="${domain}/images/products/degustacao/caixa-degustacao-960.webp"`));assert.ok(String(sitemap.source).includes(`${domain}/`))}
-   else {assert.ok(!html.includes('rel="canonical"'));assert.equal(sitemap,undefined)}
+   const expected=domain || 'https://nandicesconfeitaria.com.br';assert.ok(html.includes(`rel="canonical" href="${expected}/"`));assert.ok(html.includes(`content="${expected}/images/products/degustacao/caixa-degustacao-960.webp"`));assert.ok(String(sitemap.source).includes(`${expected}/`))
    const organization=JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/)[1]);
-   assert.equal(organization.name,'Nandices Confeitaria');assert.equal(organization.telephone,'+5561993359461');assert.equal(organization.url,domain?domain+'/':undefined);assert.equal(organization.address,undefined);
+   assert.equal(organization.name,'Nandices Confeitaria');assert.equal(organization.telephone,'+5561993359461');assert.equal(organization.url,(domain || 'https://nandicesconfeitaria.com.br')+'/');assert.equal(organization.address,undefined);
    for(const file of output){const text=String(file.code||file.source);for(const key of privateFields)assert.ok(!text.includes(process.env[key]));assert.ok(!text.includes('api.heigit.org'))}
   }
   assert.match(await readFile('public/robots.txt','utf8'),/Allow: \//);assert.match(await readFile('public/favicon.svg','utf8'),/<svg/);
