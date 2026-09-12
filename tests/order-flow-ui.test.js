@@ -20,8 +20,7 @@ for(const width of [390,1440])test(`fluxo de encomenda e blocos expansíveis em 
   assert.doesNotMatch(await page.locator('body').innerText(),/bolos personalizados|bolos e doces personalizados/i);
   const customUrl=new URL(await page.locator('#personalizados .button').getAttribute('href'));
   assert.match(customUrl.searchParams.get('text'),/docinhos personalizados/);
-  await expect(page.locator('#entrega').getByRole('button',{name:'Retirada',exact:true})).toBeVisible();
-  await expect(page.locator('#entrega').getByRole('button',{name:'Entrega',exact:true})).toBeVisible();
+  await expect(page.locator('#entrega')).toHaveCount(0);
   const planner=page.locator('#quanto-pedir'),config=page.locator('#configurador');
   const plannerToggle=planner.locator('.expandable-toggle'),configToggle=config.locator('.expandable-toggle');
   for(const section of [planner,config]){await expect(section.locator('.expandable-toggle')).toHaveAttribute('aria-expanded','false');await expect(section.locator('.expandable-panel')).toBeHidden()}
@@ -34,6 +33,7 @@ for(const width of [390,1440])test(`fluxo de encomenda e blocos expansíveis em 
   await configToggle.click();await expect(config.locator('.expandable-panel')).toBeHidden();
   await configToggle.focus();await page.keyboard.press('Space');await expect(page.locator('#flavor-0')).toHaveValue('churros');
   await config.getByRole('button',{name:'Consultar minha encomenda'}).click();
+  await expect(page.locator('#entrega')).toHaveCount(1);
   await expect(page.locator('#delivery-title')).toBeFocused();
   await expect.poll(async()=>{const box=await page.locator('#entrega').boundingBox();return Math.round(box.y)}).toBeLessThan(150);
   const header=await page.locator('header').boundingBox(),delivery=await page.locator('#entrega').boundingBox();assert.ok(delivery.y>=header.height);
