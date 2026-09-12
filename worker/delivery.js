@@ -20,7 +20,7 @@ class DeliveryError extends Error {
 function configuration(env) {
   const efficiency = Number(env.VEHICLE_KM_PER_LITER), fuelPrice = Number(env.FUEL_PRICE);
   if (PRIVATE_BINDINGS.some(key => !env[key]?.trim()) || !Number.isFinite(efficiency) || efficiency <= 0 || !Number.isFinite(fuelPrice) || fuelPrice <= 0 || !['one-way', 'round-trip'].includes(env.DELIVERY_TRIP_MODE)) {
-    throw new DeliveryError(503, false);
+    throw new DeliveryError(503, false, 'invalid_configuration');
   }
   return {efficiency, fuelPrice, tripMode: env.DELIVERY_TRIP_MODE};
 }
@@ -133,10 +133,12 @@ async function geocodeOrigin(text, key, fetcher, signal) {
   const best = features[0], p = best?.properties || {}, coordinates = best?.geometry?.coordinates;
   const validScore = score => typeof score === 'number' && Number.isFinite(score) && score >= 0 && score <= 1;
 
-  if (!validScore(p.confidence) || p.confidence < 0.9 || features.slice(1).some(f => !validScore(f?.properties?.confidence) || p.confidence - f.properties.confidence < 0.1 - Number.EPSILON)) throw new DeliveryError();
-  if (!isBrazilDF(p)) throw new DeliveryError();
-  if (!['address', 'venue'].includes(p.layer) || p.accuracy !== 'point' || p.match_type !== 'exact') throw new DeliveryError();
-  if (best.geometry?.type !== 'Point' || !Array.isArray(coordinates) || coordinates.length !== 2 || !coordinates.every(Number.isFinite) || Math.abs(coordinates[0]) > 180 || Math.abs(coordinates[1]) > 90 || typeof p.label !== 'string' || !p.label.trim()) throw new DeliveryError();
+  if (!validScore(p.confidence) || p.confidence < 0.9 || features.slice(1).some(f => !validScore(f?.properties?.confidence) || p.confidence - f.properties.confidence < 0.1 - Number.EPSILON)) throw new DeliveryError(422, true, 'origin_confidence');
+  if (!isBrazilDF(p)) {
+    throw new DeliveryError(422, true, 'origin_region');
+  }
+  if (!['address', 'venue'].includes(p.layer) || p.accuracy !== 'point' || p.match_type !== 'exact') throw new DeliveryError(422, true, 'origin_precision');
+  if (best.geometry?.type !== 'Point' || !Array.isArray(coordinates) || coordinates.length !== 2 || !coordinates.every(Number.isFinite) || Math.abs(coordinates[0]) > 180 || Math.abs(coordinates[1]) > 90 || typeof p.label !== 'string' || !p.label.trim()) throw new DeliveryError(422, true, 'origin_geometry');
 
   return {coordinates, label: p.label};
 }
@@ -154,8 +156,10 @@ async function geocodeDestination(text, key, fetcher, signal, viaAddress) {
   const p = chosen?.properties || {};
   const coordinates = chosen?.geometry?.coordinates;
 
-  if (!isBrazilDF(p)) throw new DeliveryError();
-  if (!Array.isArray(coordinates) || coordinates.length !== 2 || !coordinates.every(Number.isFinite) || Math.abs(coordinates[0]) > 180 || Math.abs(coordinates[1]) > 90 || typeof p.label !== 'string' || !p.label.trim()) throw new DeliveryError();
+  if (!isBrazilDF(p)) {
+    throw new DeliveryError(422, true, 'destination_region');
+  }
+  if (!Array.isArray(coordinates) || coordinates.length !== 2 || !coordinates.every(Number.isFinite) || Math.abs(coordinates[0]) > 180 || Math.abs(coordinates[1]) > 90 || typeof p.label !== 'string' || !p.label.trim()) throw new DeliveryError(422, true, 'destination_geometry');
 
   return {coordinates, label: p.label};
 }
@@ -168,7 +172,7 @@ async function routeDistance(origin, destination, key, fetcher, signal) {
   }, signal);
 
   const meters = data?.routes?.[0]?.summary?.distance;
-  if (!Number.isFinite(meters) || meters < 0) throw new DeliveryError(502, false);
+  if (!Number.isFinite(meters) || meters < 0) throw new DeliveryError(502, false, 'route_invalid_distance');
   return meters;
 }
 
@@ -204,7 +208,9 @@ export async function handleDelivery(request, env, fetcher = fetch) {
     // Origin: the private environment address stays under strict origin validation.
     const source = await geocodeOrigin(env.DELIVERY_ORIGIN, env.OPENROUTESERVICE_API_KEY, fetcher, signal);
 
-    if (PRIVATE_BINDINGS.some(key => destination.label.includes(env[key]))) throw new DeliveryError();
+    if (PRIVATE_BINDINGS.some(key => destination.label.includes(env[key]))) {
+      throw new DeliveryError(422, true, 'destination_private_match');
+    }
 
     const outbound = await routeDistance(source, destination, env.OPENROUTESERVICE_API_KEY, fetcher, signal);
     const inbound = config.tripMode === 'round-trip' ? await routeDistance(destination, source, env.OPENROUTESERVICE_API_KEY, fetcher, signal) : 0;
@@ -213,7 +219,7 @@ export async function handleDelivery(request, env, fetcher = fetch) {
     const billableDistanceKm = (outbound + inbound) / 1000;
     const estimatedCents = Math.round(billableDistanceKm / config.efficiency * config.fuelPrice * 100);
 
-    if (!Number.isSafeInteger(estimatedCents) || estimatedCents < 0) throw new DeliveryError(502, false);
+    if (!Number.isSafeInteger(estimatedCents) || estimatedCents < 0) throw new DeliveryError(502, false, 'calculation_invalid');
 
     return reply({
       status: 'estimated',
