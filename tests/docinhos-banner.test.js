@@ -38,12 +38,26 @@ test('Home e docinhos compartilham hero, header e CTA em quatro viewports',async
    }
    assert.deepEqual(metrics[0],metrics[1]);
   }
-  for(const route of ['/','/encomenda','/frete']){
+  for(const route of ['/encomenda','/frete']){
    await page.goto(base+route);await expect(page.locator('img[src="/images/docinhos/docinhos-hero.webp"]')).toHaveCount(0);
   }
   await page.goto(base+'/encomenda');
   await expect(page.locator('.optional-freight').getByRole('link',{name:/Calcular frete/})).toHaveAttribute('href','/frete');
   await page.goto(base);await expect(page.locator('.home-sweets article')).toHaveCount(4);
+  await expect(page.locator('.tasting-photo img')).toHaveAttribute('src','/images/products/degustacao/caixa-catalogo-azul.webp');
+  await expect(page.locator('.brand-hero__image')).toHaveAttribute('src','/images/brand/hero-nandices.png');
+  for(const width of [390,768,1024,1280,1440]){
+   await page.setViewportSize({width,height:900});
+   await page.locator('#degustacao').scrollIntoViewIfNeeded();
+   await page.locator('.tasting-photo img').evaluate(img=>img.decode());
+   const frame=await page.locator('.tasting-photo').boundingBox();
+   const photo=await page.locator('.tasting-photo img').boundingBox();
+   if(width>1100){const section=await page.locator('#degustacao').boundingBox();assert.ok(Math.abs(section.height-frame.height)<1,'foto deve preencher a altura da seção');}
+   for(const key of ['x','y','width','height'])assert.ok(Math.abs(frame[key]-photo[key])<1,`foto deve preencher o contêiner: ${width} ${key}`);
+   assert.ok(Math.max((frame.width/frame.height)/(4/3),(4/3)/(frame.width/frame.height))<1.16,'evitar corte excessivo da caixa');
+   await page.locator('#degustacao').screenshot({path:join(shots,`degustacao-${width}.png`)});
+   await expect(page.locator('#degustacao').getByRole('link',{name:/Pedir Caixa/})).toBeVisible();
+  }
   assert.deepEqual(errors,[]);
  }finally{await browser?.close();await server.close()}
 });

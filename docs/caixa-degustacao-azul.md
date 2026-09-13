@@ -1,0 +1,9 @@
+# Caixa Degustação — fundo azul
+
+Edição pela ferramenta integrada de imagens. Fonte: caixa aprovada do hero; referência de fundo e iluminação: foto Brigadeiro Tradicional do catálogo. Arte exclusiva da seção de degustação, sem alterar o hero. Composição generativa, não fotografia real da caixa.
+
+Arquivo: public/images/products/degustacao/caixa-catalogo-azul.webp
+
+## Prompt
+
+Use case: compositing. Image 1 is edit target: extract its exact white rectangular open box with its twelve sweets, preserving every individual sweet, count, arrangement, colors, decorations and perspective. Image 2 is ONLY studio background and lighting reference, do not insert or duplicate its sweet. Create a standalone product photograph for Caixa Degustação, landscape 4:3, high resolution ideally 2048x1536. Center the entire existing box with comfortable 8% margins, all corners fully visible. Replace all ivory backdrop, blue graphic wave, typography/logo with the same seamless deep blue studio surface/backdrop as Image 2. Match Image 2's soft directional upper-left studio illumination, gentle contact shadow below/to the right, crisp appetizing detail and natural contrast. No text, no logo, no wave, no extra props. DO NOT CHANGE THE PRODUCTS: back row brown chocolate sprinkles, yellow coconut pointed cream, pale butterfly Ninho, half cocoa half pale heart Casadinho; middle row pink star Bicho de Pe, cinnamon sugar caramel rosette Churros, chopped peanuts Nutella Ferrero, speckled passionfruit yellow cream dark seed; front row pale Nutella rosette, torched sugar Creme Brulee, brown sugar coated Cajuzinho, green chopped Pistache. Exactly the same 12 sweets and white paper cups from Image 1. Keep box white. Change only backdrop and lighting, reframe entire box for a standalone 4:3 product card; photorealistic, not a redesigned assortment.
