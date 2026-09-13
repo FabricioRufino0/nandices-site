@@ -24,7 +24,7 @@ O planejador calcula 1 kg de bolo por 10 pessoas, com mínimo de 1,5 kg. Arredon
 
 `SITE_URL` é opcional localmente. Quando definido com domínio HTTPS confirmado, gera canonical, og:url, imagem social absoluta e sitemap.xml. Metadados e favicon existentes preservados. JSON-LD Organization contém somente nome, telefone, Instagram e URL quando configurada; sem endereço residencial, avaliações ou horários inventados.
 
-Reutilizado `window.dataLayer`, sem novo fornecedor: `whatsapp_header`, `whatsapp_bolo`, `whatsapp_brigadeiro`, `whatsapp_degustacao`, `whatsapp_personalizado`, `whatsapp_configurador`, `whatsapp_planner`, `planner_completed`, `planner_to_configurator`, `freight_calculated`, `whatsapp_delivery`, `instagram_click`. Nenhum endereço é enviado ao analytics. A coleta real depende do fornecedor que vier a ser conectado.
+GA4 opcional via `VITE_GA_MEASUREMENT_ID`, preservando os eventos de `window.dataLayer`. Sem ID válido, nenhum script do Google é carregado. Pageviews de carregamento e History API, cliques WhatsApp/Instagram, planejador e frete; sem CEP, endereço ou mensagem enviados pela integração. Veja [configuração, eventos e prevenção de duplicatas](docs/ga4-e-icones.md). Ícones ICO, PNG, Apple e manifest ficam em `public/`; regeneração com `node scripts/generate-icons.mjs`.
 
 ## Frete
 

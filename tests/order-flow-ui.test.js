@@ -20,7 +20,10 @@ test('rotas, seleção, revisão e WhatsApp nas encomendas A–H', {timeout:1200
   await expect(page.locator('.cake-grid article')).toHaveCount(4);
   await expect(page.locator('#configurador,#quanto-pedir,#entrega')).toHaveCount(0);
   await expect(page.locator('.cake-pricing')).toContainText('90,00');
-  await expect(page.locator('#personalizados')).toContainText('Bolos e doces personalizados');
+  await expect(page.locator('#personalizados')).toContainText('Doces personalizados');
+  await expect(page.locator('#personalizados')).not.toContainText(/bolos/i);
+  const custom=page.locator('#personalizados').getByRole('link',{name:/Solicitar doces personalizados/});
+  assert.match(decodeURIComponent(await custom.getAttribute('href')),/solicitar doces personalizados/);
   await page.getByRole('link',{name:'Ver todos os docinhos',exact:true}).click();
   await expect(page).toHaveURL(/\/docinhos$/);
   await expect(page.locator('.sweet-grid article')).toHaveCount(6);

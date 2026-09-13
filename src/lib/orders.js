@@ -1,5 +1,6 @@
 import {summarizeLots,summarizeOrder} from './planning.js';
 import {money,number} from '../data/commerce.js';
+import {forwardAnalytics} from './analytics.js';
 export const PHONE = '5561993359461';
 export const createWhatsAppLink = message => `https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`;
 export const orderMessage = 'Olá! Vim pelo site da Nandices e gostaria de fazer uma encomenda.';
@@ -23,4 +24,5 @@ export function track(event, data = {}) {
  if(typeof window==='undefined')return;
  window.dataLayer = window.dataLayer || [];
  window.dataLayer.push({ event, ...data });
+ forwardAnalytics(event,data);
 }

@@ -2,13 +2,13 @@ import {defineConfig,loadEnv} from 'vite';
 import {PHONE} from './src/lib/orders.js';
 import {routeMetadata,pageMetadataHtml} from './src/data/routes.js';
 export default defineConfig(({mode})=>{
- const env=loadEnv(mode,process.cwd(),'SITE_URL');
+ const env=loadEnv(mode,process.cwd(),['SITE_URL','VITE_GA_MEASUREMENT_ID']);
  const value=env.SITE_URL?.trim() || 'https://nandicesconfeitaria.com.br';
  let origin;
  {const url=new URL(value);if(url.protocol!=='https:')throw new Error('SITE_URL deve usar HTTPS');origin=url.origin;}
  const sitemap=`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${Object.keys(routeMetadata).map(path=>`  <url><loc>${origin}${path}</loc></url>`).join('\n')}\n</urlset>\n`;
  const robots=`User-agent: *\nAllow: /\n\nSitemap: ${origin}/sitemap.xml\n`;
- return {envPrefix:[],server:{proxy:{'/api':{target:'http://127.0.0.1:8787',changeOrigin:true,configure(proxy){
+ return {envPrefix:[],define:{'import.meta.env.VITE_GA_MEASUREMENT_ID':JSON.stringify(/^G-[A-Z0-9]+$/.test(env.VITE_GA_MEASUREMENT_ID?.trim()||'')?env.VITE_GA_MEASUREMENT_ID.trim():'')},server:{proxy:{'/api':{target:'http://127.0.0.1:8787',changeOrigin:true,configure(proxy){
   proxy.on('proxyReq',(outgoing,incoming)=>{
    // Translate only same-origin browser requests; foreign origins stay rejected by the Worker.
    if(incoming.headers.origin===`http://${incoming.headers.host}`)outgoing.setHeader('Origin','http://127.0.0.1:8787');

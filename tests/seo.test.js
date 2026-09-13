@@ -5,6 +5,7 @@ import {PRIVATE_BINDINGS} from '../worker/delivery.js';
 import {readFile,mkdtemp} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import sharp from 'sharp';
 test('SEO local e com domínio: canonical, sitemap, OG, JSON-LD e secrets fora do frontend',async()=>{
  const privateFields=[...PRIVATE_BINDINGS,...PRIVATE_BINDINGS.map(key=>`VITE_${key}`),'VITE_OTHER_PROVIDER_TOKEN'];
  const fields=['SITE_URL',...privateFields];
@@ -47,8 +48,15 @@ test('build servido: rotas com canonical próprio e arquivos públicos reais',as
    const html=await response.text();
    assert.ok(html.includes(`rel="canonical" href="https://nandicesconfeitaria.com.br${path}"`));
    assert.doesNotMatch(html,/noindex/);
+   for(const href of ['/favicon.ico','/favicon.png','/favicon.svg','/apple-touch-icon.png','/site.webmanifest'])assert.ok(html.includes(`href="${href}"`));
   }
   const sitemap=await fetch(base+'/sitemap.xml');assert.equal(sitemap.status,200);assert.match(sitemap.headers.get('content-type'),/xml/);assert.equal(((await sitemap.text()).match(/<loc>/g)||[]).length,4);
   const robots=await fetch(base+'/robots.txt');assert.equal(robots.status,200);assert.match(await robots.text(),/Sitemap: https:\/\/nandicesconfeitaria.com.br\/sitemap.xml/);
+  for(const [file,size] of [['favicon.png',96],['apple-touch-icon.png',180],['icon-192.png',192],['icon-512.png',512]]){
+   const r=await fetch(base+'/'+file);assert.equal(r.status,200);assert.match(r.headers.get('content-type'),/image\/png/);
+   const meta=await sharp(Buffer.from(await r.arrayBuffer())).metadata();assert.equal(meta.width,size);assert.equal(meta.height,size);
+  }
+  const ico=await fetch(base+'/favicon.ico');assert.equal(ico.status,200);const bytes=Buffer.from(await ico.arrayBuffer());assert.equal(bytes.readUInt16LE(2),1);assert.equal(bytes.readUInt16LE(4),3);
+  const manifest=await fetch(base+'/site.webmanifest');assert.equal(manifest.status,200);const data=await manifest.json();assert.equal(data.start_url,'/');assert.deepEqual(data.icons.map(i=>i.sizes),['192x192','512x512']);
  }finally{await new Promise(resolve=>server.httpServer.close(resolve))}
 });
