@@ -9,15 +9,9 @@ test('navegador: estimativa válida, endereço inválido/ambíguo, falha e preç
  let browser;
  try{
   await vite.listen();browser=await chromium.launch({channel:'msedge',headless:true});const page=await browser.newPage();
-  await page.goto(`http://127.0.0.1:${vite.httpServer.address().port}`);
-  await expect(page.locator('#entrega')).toHaveCount(0);
-  const config=page.locator('#configurador');const configToggle=config.locator('.expandable-toggle');await configToggle.click();await expect(config.locator('.expandable-panel')).toBeVisible();
-  await page.selectOption('#quantity','150');
-  for(let i=0;i<3;i++)await page.selectOption(`#flavor-${i}`,'churros');
-  await page.selectOption('#cup-0','Branquinho');await page.selectOption('#cup-1','Branquinho');await page.selectOption('#cup-2','Branquinho');
-  await page.getByRole('button',{name:'Consultar minha encomenda'}).click();
+  await page.goto(`http://127.0.0.1:${vite.httpServer.address().port}/frete`);
   const delivery=page.locator('#entrega');await expect(delivery).toHaveCount(1);
-  await delivery.getByRole('button',{name:'Entrega',exact:true}).click();
+  await expect(page.locator('#configurador')).toHaveCount(0);
   await page.fill('#delivery-cep','70000-000');
   const quote={status:'estimated',estimatedCents:1184,distanceKm:12.5,billableDistanceKm:27.5,tripMode:'round-trip',destination:'Destino fictício, DF'};
   let result={http:200,body:quote},requests=[];

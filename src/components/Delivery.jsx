@@ -12,7 +12,7 @@ function failureKind(error){
 }
 export default function Delivery({orderContext=''}){
  const messageFor=(mode,address,quote)=>[orderContext,deliveryMessage(mode,address,quote)].filter(Boolean).join('\n\n');
- const [mode,setMode]=useState('pickup'),[cep,setCep]=useState(''),[quote,setQuote]=useState(null),[error,setError]=useState(''),[loading,setLoading]=useState(false);
+ const [mode,setMode]=useState('delivery'),[cep,setCep]=useState(''),[quote,setQuote]=useState(null),[error,setError]=useState(''),[loading,setLoading]=useState(false);
  const pending=useRef(null);
  useEffect(()=>()=>pending.current?.abort(),[]);
  function invalidate(){pending.current?.abort();pending.current=null;setQuote(null);setError('');setLoading(false)}

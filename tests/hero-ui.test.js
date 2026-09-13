@@ -23,7 +23,7 @@ test('hero: responsive layout, accessible heading and working flavors link',asyn
    await expect(page).toHaveURL(/#bolos$/);
    const header=await page.locator('header').boundingBox(),cakes=await page.locator('#bolos').boundingBox();
    assert.ok(Math.abs(header.y)<1);assert.ok(cakes.y>=header.height-1&&cakes.y<height);
-   if(width<=800){await page.getByRole('button',{name:'Menu',exact:true}).click();await expect(page.locator('#navigation')).toBeVisible();await page.locator('#navigation').getByRole('link',{name:'Doces',exact:true}).click();await expect(page).toHaveURL(/#doces$/);await expect(page.locator('#navigation')).toBeHidden()}
+   if(width<=800){await page.getByRole('button',{name:'Menu',exact:true}).click();await expect(page.locator('#navigation')).toBeVisible();await page.locator('#navigation').getByRole('link',{name:'Docinhos',exact:true}).click();await expect(page).toHaveURL(/\/docinhos$/);await expect(page.locator('#navigation')).toBeHidden()}
    assert.deepEqual(errors,[]);await page.close();
   }
  }finally{await browser?.close();await vite.close()}
