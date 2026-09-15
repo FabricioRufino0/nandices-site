@@ -121,6 +121,7 @@ header nav a[aria-current=page]{background:var(--cream-soft);color:var(--blue-de
 
 .expandable.section{border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow-card)}
 .expandable-toggle{min-height:52px}
+.planner form>.button{margin-top:18px}
 .delivery-section{border-radius:var(--radius-lg);background:var(--surface);box-shadow:var(--shadow-card)}
 footer{max-width:1340px;margin:auto}
 
@@ -186,6 +187,7 @@ footer{max-width:1340px;margin:auto}
  .catalog-category{margin-bottom:58px;scroll-margin-top:150px}
  .catalog-page .sweet-grid{grid-template-columns:1fr;gap:22px}
  .catalog-contact{margin-inline:12px;border-radius:20px}
+ .planner form>.button{margin-top:16px}
  .cups{padding-inline:20px}
  footer{padding-inline:22px}
 }
