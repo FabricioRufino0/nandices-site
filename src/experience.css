@@ -68,6 +68,10 @@ header nav a[aria-current=page]{background:var(--cream-soft);color:var(--blue-de
 .home-sweets .all-sweets{margin-top:38px}
 
 .order-guide{display:grid;grid-template-columns:minmax(280px,.8fr) minmax(0,1.35fr);gap:76px;align-items:start}
+.tasting-intro{max-width:1240px;padding-block:28px 18px;text-align:center}
+.tasting-intro .eyebrow{margin-bottom:10px;color:var(--blue)}
+.tasting-intro h2{font-size:clamp(32px,3.6vw,48px);margin-bottom:8px}
+.tasting-intro p:last-child{margin:0;color:var(--muted);font-size:15px}
 .order-guide__intro{position:sticky;top:122px}
 .order-guide__intro h2{font-size:clamp(42px,4.2vw,61px)}
 .order-guide__intro>p:last-child{max-width:430px;color:var(--muted)}

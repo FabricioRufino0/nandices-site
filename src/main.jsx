@@ -11,6 +11,7 @@ import BrandHero from './components/BrandHero.jsx';
 import ProductCard,{Photo,ProductDescription} from './components/ProductCard.jsx';
 import {CakeCalculator} from './components/Planner.jsx';
 import OrderGuide from './components/OrderGuide.jsx';
+import TastingIntro from './components/TastingIntro.jsx';
 import {routeMetadata} from './data/routes.js';
 import {track} from './lib/orders.js';
 import './style.css';
@@ -48,7 +49,7 @@ function Personalized(){
 }
 
 function Home(){
- return <><BrandHero/><Cakes/><HomeSweets/><OrderGuide/><Tasting/><Personalized/><About/><section className="contact"><p className="eyebrow">FALE COM A NANDA</p><h2>Ficou com alguma dúvida?</h2><p>Fale diretamente com a Nanda para confirmar sabores, quantidades, disponibilidade, doces personalizados, entrega e outros detalhes.</p><WA cta_location="contato" message="Olá! Vim pelo site da Nandices e gostaria de tirar uma dúvida.">Falar com a Nanda</WA><p><a href="https://www.instagram.com/nandices.confeitaria/" target="_blank" rel="noopener noreferrer" onClick={()=>track('instagram_click',{cta_location:'contato'})}>@nandices.confeitaria</a></p></section></>;
+ return <><BrandHero/><Cakes/><HomeSweets/><TastingIntro/><Tasting/><Personalized/><OrderGuide/><About/><section className="contact"><p className="eyebrow">FALE COM A NANDA</p><h2>Ficou com alguma dúvida?</h2><p>Fale diretamente com a Nanda para confirmar sabores, quantidades, disponibilidade, doces personalizados, entrega e outros detalhes.</p><WA cta_location="contato" message="Olá! Vim pelo site da Nandices e gostaria de tirar uma dúvida.">Falar com a Nanda</WA><p><a href="https://www.instagram.com/nandices.confeitaria/" target="_blank" rel="noopener noreferrer" onClick={()=>track('instagram_click',{cta_location:'contato'})}>@nandices.confeitaria</a></p></section></>;
 }
 
 function App(){
