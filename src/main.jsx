@@ -37,7 +37,7 @@ function Cakes(){
 
 function HomeSweets(){
  const highlights=sweets.filter(product=>['brigadeiro-tradicional','beijinho','bicho-de-pe','pistache'].includes(product.id));
- return <section className="section sweets home-sweets"><Heading label="Doces & Brigadeiros" title="Pequenos. Inesquecíveis.">Uma seleção para começar. Conheça todos os 12 sabores no nosso catálogo.</Heading><div className="sweet-grid">{highlights.map(product=><ProductCard key={product.id} product={product}/>)}</div><a className="button all-sweets" href="/docinhos">Ver todos os docinhos <Arrow/></a></section>;
+ return <section className="section sweets home-sweets"><Heading label="Doces & Brigadeiros" title="Pequenos. Inesquecíveis.">Uma seleção para começar. Conheça todos os 12 sabores no nosso catálogo.</Heading><div className="sweet-grid">{highlights.map(product=><ProductCard key={product.id} product={product}/>)}</div><a className="button all-sweets" href="/docinhos">Ver nossos docinhos <Arrow/></a></section>;
 }
 
 function Tasting(){
@@ -71,7 +71,7 @@ function App(){
   event.preventDefault();
   document.querySelector(item.target)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
  };
- const isCurrent=item=>path==='/docinhos'?item.label==='Docinhos':path==='/frete'?item.label==='Entrega e frete':item.label==='Bolos';
+ const isCurrent=item=>path==='/docinhos'?item.label==='Docinhos':path==='/frete'?item.label==='Entrega e frete':false;
  const navLink=item=>path!==item.href&&item.crossTarget?item.crossTarget:item.href;
  return <><a className="skip" href="#conteudo">Pular para o conteúdo</a><header><a className="wordmark" href="/" aria-label="Nandices Confeitaria, início"><BrandName/><span>CONFEITARIA</span></a><nav id="navigation" className={menu?'open':''} aria-label="Navegação principal">{nav.map(item=><a key={item.label} href={navLink(item)} aria-current={isCurrent(item)?'page':undefined} onClick={navigateTo(item)}>{item.label}</a>)}<WA className="nav-whatsapp" cta_location="menu">Pedir pelo WhatsApp</WA></nav><WA className="button header-cta" cta_location="header"><span className="desktop-label">Pedir pelo WhatsApp</span><span className="mobile-label">Pedir</span></WA><button className="menu-button" aria-expanded={menu} aria-controls="navigation" onClick={()=>setMenu(!menu)}>{menu?'Fechar':'Menu'}</button></header><main id="conteudo">{path==='/docinhos'?<SweetsCatalog/>:path==='/frete'?<><section className="section page-intro"><p className="eyebrow">ENTREGA NO DF</p><h1>Consulte o frete</h1><p>Informe o CEP para consultar a estimativa de entrega.</p></section><Delivery/></>:path==='/'?<Home/>:<section className="section page-intro"><h1>Página não encontrada</h1><a className="button" href="/">Voltar ao início</a></section>}</main><footer><a href="/" className="wordmark"><BrandName/><span>CONFEITARIA</span></a><a href="https://www.instagram.com/nandices.confeitaria/" target="_blank" rel="noopener noreferrer">Instagram <Arrow/></a><span>© {new Date().getFullYear()} Nandices Confeitaria</span></footer></>;
 }
