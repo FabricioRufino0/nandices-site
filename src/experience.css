@@ -168,12 +168,14 @@ footer{max-width:1340px;margin:auto}
  .home-sweets{padding:60px 20px!important}
  .home-sweets .sweet-grid{grid-template-columns:1fr;gap:22px}
  .home-sweets .sweet-grid h3{font-size:33px}
- .order-guide{display:block}
- .order-guide__intro{position:static;margin-bottom:22px}
- .order-guide__intro h2{font-size:38px}
- .order-guide li{grid-template-columns:42px 1fr;gap:12px;padding:16px 0}
- .order-guide li>span{font-size:29px}
- .order-guide h3{font-size:23px}
+ .order-guide{display:block;margin-inline:12px;border-radius:20px;background:linear-gradient(145deg,var(--surface),#f2eadf);box-shadow:var(--shadow-soft);padding:34px 20px!important}
+ .order-guide__intro{position:static;margin-bottom:16px}
+ .order-guide__intro h2{font-size:32px;line-height:1.08}
+ .order-guide__intro>p:last-child{font-size:14px;line-height:1.6}
+ .order-guide li{grid-template-columns:38px 1fr;gap:10px;padding:13px 0}
+ .order-guide li>span{font-size:25px}
+ .order-guide h3{font-size:20px;margin-bottom:4px}
+ .order-guide li p{font-size:13px;line-height:1.6}
  .tasting,.personal,.about{margin:0 12px 42px;border-radius:20px!important}
  .tasting-copy{padding:38px 24px 34px}
  .tasting-copy h2{font-size:44px}
