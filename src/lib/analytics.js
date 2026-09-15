@@ -2,7 +2,7 @@ import {routeMetadata} from '../data/routes.js';
 
 let activeId='';
 const fields=['cta_location','product_name','product_category','quantity','event_type','guests','cake_kg','quantity_min','quantity_max','estimated_value','distance_km','trip_mode','failure_kind'];
-export const analyticsEvents=new Set(['whatsapp_header','whatsapp_bolo','whatsapp_degustacao','whatsapp_personalizado','whatsapp_order','whatsapp_planner','planner_completed','planner_to_configurator','freight_calculated','freight_calculation_failed','whatsapp_delivery','instagram_click']);
+export const analyticsEvents=new Set(['whatsapp_header','whatsapp_bolo','whatsapp_degustacao','whatsapp_personalizado','whatsapp_product','whatsapp_sweets_estimate','whatsapp_cake_estimate','sweets_estimate_completed','cake_estimate_completed','freight_calculated','freight_calculation_failed','whatsapp_delivery','instagram_click']);
 function command(){window.dataLayer.push(arguments)}
 export function forwardAnalytics(event,data={}){
  if(!activeId||!analyticsEvents.has(event))return;

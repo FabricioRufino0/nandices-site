@@ -1,7 +1,6 @@
 export const routeMetadata={
  '/':{title:'Nandices Confeitaria | Bolos e doces artesanais no DF',description:'Bolos, brigadeiros e Caixa Degustação feitos com ingredientes selecionados. Conheça a Nandices, em Sobradinho, com entregas em todo o DF. Encomendas pelo WhatsApp.'},
- '/docinhos':{title:'Docinhos e Brigadeiros | Nandices Confeitaria',description:'Conheça os 12 sabores de brigadeiros da Nandices. Selecione seus favoritos e continue sua encomenda em múltiplos de 50 unidades.'},
- '/encomenda':{title:'Monte sua encomenda | Nandices Confeitaria',description:'Use a calculadora para seu evento, escolha de 50 a 500 docinhos, distribua os sabores e selecione uma forminha. Finalize pelo WhatsApp.'},
+ '/docinhos':{title:'Docinhos e Brigadeiros | Nandices Confeitaria',description:'Conheça os 12 sabores de brigadeiros da Nandices, as forminhas e a Caixa Degustação. Consulte pelo WhatsApp.'},
  '/frete':{title:'Consulta de frete no DF | Nandices Confeitaria',description:'Consulte a estimativa de entrega da Nandices pelo CEP. Frete e retirada combinados diretamente com a Nanda.'},
 };
 

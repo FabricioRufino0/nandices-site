@@ -1,0 +1,22 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {estimateCake,estimateSweets} from '../src/lib/planning.js';
+import {sweets} from '../src/data/catalog.js';
+import {routeMetadata} from '../src/data/routes.js';
+import {cakeEstimateMessage,sweetsEstimateMessage} from '../src/lib/orders.js';
+
+test('catálogo mantém as três categorias e os 12 docinhos simultaneamente',()=>{
+ assert.equal(sweets.length,12);
+ assert.deepEqual(sweets.reduce((total,item)=>({...total,[item.category]:(total[item.category]||0)+1}),{}),{Tradicional:6,Gourmet:5,Pistache:1});
+ assert.deepEqual(Object.keys(routeMetadata),['/','/docinhos','/frete']);
+});
+test('estimativa de docinhos usa faixas comerciais de 50',()=>{
+ assert.deepEqual(estimateSweets('aniversario',40),{event:'Aniversário',guests:40,min:150,max:200});
+ assert.throws(()=>estimateSweets('aniversario',0));assert.throws(()=>estimateSweets('aniversario',2.5));
+ const message=sweetsEstimateMessage(estimateSweets('aniversario',40));assert.match(message,/150 a 200/);assert.doesNotMatch(message,/pedido é/i);
+});
+test('estimativa de bolo respeita mínimo e preço em centavos',()=>{
+ for(const [guests,kg,cents] of [[5,1.5,13500],[10,1.5,13500],[20,2,18000],[23,2.3,20700],[25,2.5,22500],[35,3.5,31500]])assert.deepEqual(estimateCake(guests),{guests,kg,estimatedCents:cents});
+ assert.throws(()=>estimateCake(0));assert.throws(()=>estimateCake(2.5));
+ assert.match(cakeEstimateMessage(estimateCake(25)),/R\$ 225,00/);
+});
