@@ -17,8 +17,7 @@ export default function BrandHero({docinhos=false}){
   </picture>
   <div className="brand-hero__actions">
    <button type="button" className="button" onClick={()=>scrollTo(docinhos?'#catalog-title':'.cakes')}>{docinhos?'Ver catálogo':'Ver nossos bolos'} <span aria-hidden="true">↗</span></button>
-   {docinhos?<button type="button" className="button button-secondary" onClick={()=>scrollTo('#caixa-degustacao')}>Caixa Degustação <span aria-hidden="true">↗</span></button>:<a className="button button-secondary" href="/docinhos">Ver docinhos <span aria-hidden="true">↗</span></a>}
+   {docinhos?<a className="button button-secondary" href="/">Ver nossos bolos <span aria-hidden="true">↗</span></a>:<a className="button button-secondary" href="/docinhos">Ver docinhos <span aria-hidden="true">↗</span></a>}
   </div>
-  {!docinhos&&<nav className="home-explore" aria-label="Explore a Nandices"><span>Explore a Nandices</span><button type="button" onClick={()=>scrollTo('.cakes')}>Bolos</button><a href="/docinhos">Docinhos</a><button type="button" onClick={()=>scrollTo('.tasting')}>Caixa Degustação</button><a href="/docinhos">Personalizados</a></nav>}
  </section>;
 }
