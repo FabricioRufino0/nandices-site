@@ -40,7 +40,7 @@ function HomeSweets(){
 }
 
 function Tasting(){
- return <section className="tasting"><div className="tasting-photo"><img src="/images/products/degustacao/caixa-catalogo-azul.webp" loading="lazy" width="1448" height="1086" alt="Caixa Degustação Nandices com 12 brigadeiros variados"/></div><div className="tasting-copy"><p className="eyebrow">PROVE A COLEÇÃO</p><h2>Caixa Degustação</h2><p className="section-tagline">12 sabores. Uma descoberta.</p><p>Conheça todos os sabores da Nandices em uma caixa especial.</p><div className="tasting-price"><span>Caixa Degustação</span><strong>{money(TASTING.price)}</strong></div><small>12 unidades · encomende com antecedência mínima de 7 dias.</small><WA event="whatsapp_degustacao" cta_location="degustacao_home" product_name="Caixa Degustação" message="Olá! Vim pelo site da Nandices e gostaria de consultar a Caixa Degustação.">Consultar Caixa Degustação</WA></div></section>;
+ return <section className="tasting" id="caixa-degustacao"><div className="tasting-photo"><img src="/images/products/degustacao/caixa-catalogo-azul.webp" loading="lazy" width="1448" height="1086" alt="Caixa Degustação Nandices com 12 brigadeiros variados"/></div><div className="tasting-copy"><p className="eyebrow">PROVE A COLEÇÃO</p><h2>Caixa Degustação</h2><p className="section-tagline">12 sabores. Uma descoberta.</p><p>Conheça todos os sabores da Nandices em uma caixa especial.</p><div className="tasting-price"><span>Caixa Degustação</span><strong>{money(TASTING.price)}</strong></div><small>12 unidades · encomende com antecedência mínima de 7 dias.</small><WA event="whatsapp_degustacao" cta_location="degustacao_home" product_name="Caixa Degustação" message="Olá! Vim pelo site da Nandices e gostaria de consultar a Caixa Degustação.">Consultar Caixa Degustação</WA></div></section>;
 }
 
 function Personalized(){
@@ -55,10 +55,11 @@ function App(){
  const path=window.location.pathname.replace(/\/$/,'')||'/';
  const [menu,setMenu]=useState(false);
  useEffect(()=>{const meta=routeMetadata[path]||routeMetadata['/'];document.title=meta.title;document.querySelector('meta[name="description"]')?.setAttribute('content',meta.description)},[path]);
- useEffect(()=>{if(path!=='/'||new URLSearchParams(window.location.search).get('section')!=='personalizados')return;const behavior=matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';window.setTimeout(()=>{document.querySelector('.personal')?.scrollIntoView({behavior,block:'start'});window.history.replaceState(null,'','/');},0)},[path]);
+ useEffect(()=>{const section=new URLSearchParams(window.location.search).get('section');if(path!=='/'||!['personalizados','degustacao'].includes(section))return;const behavior=matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';window.setTimeout(()=>{document.querySelector(section==='personalizados'?'.personal':'#caixa-degustacao')?.scrollIntoView({behavior,block:'start'});window.history.replaceState(null,'','/');},0)},[path]);
  const nav=[
   {href:'/',label:'Bolos',target:'.cakes'},
   {href:'/docinhos',label:'Docinhos',target:'#catalog-title'},
+  {href:'/',label:'Caixa Degustação',target:'#caixa-degustacao',crossTarget:'/?section=degustacao'},
   {href:'/',label:'Personalizados',target:'.personal',crossTarget:'/?section=personalizados'},
   {href:'/frete',label:'Entrega e frete'}
  ];

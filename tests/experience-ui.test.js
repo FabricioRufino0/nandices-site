@@ -39,5 +39,10 @@ test('experiência orienta a escolha e mantém o catálogo confortável em mobil
   await page.locator('#navigation').getByRole('link',{name:'Personalizados',exact:true}).click();
   await expect(page).toHaveURL(/127\.0\.0\.1:\d+\/$/);
   await expect(page.locator('.personal')).toBeInViewport();
+  await page.goto(base+'/docinhos');
+  await page.getByRole('button',{name:'Menu',exact:true}).click();
+  await page.locator('#navigation').getByRole('link',{name:'Caixa Degustação',exact:true}).click();
+  await expect(page).toHaveURL(/127\.0\.0\.1:\d+\/$/);
+  await expect(page.locator('#caixa-degustacao')).toBeInViewport();
  }finally{await browser?.close();await server.close()}
 });
