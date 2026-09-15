@@ -148,6 +148,7 @@ footer{max-width:1340px;margin:auto}
 
 @media(max-width:760px){
  header nav{padding-block:12px 18px}
+ header nav{padding-block:12px 18px}
  html{scroll-padding-top:86px}
  header{height:76px;padding-inline:16px}
  header .wordmark{font-size:31px}
