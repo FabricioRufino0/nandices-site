@@ -151,7 +151,7 @@ footer{max-width:1340px;margin:auto}
  header nav{top:76px;padding:12px 16px 18px;background:rgba(251,248,242,.98);box-shadow:0 18px 30px rgba(23,37,52,.12)}
  header nav.open{gap:5px}
  header nav a:not(.nav-whatsapp){justify-content:space-between;width:100%;min-height:49px;padding:12px 16px;font-size:16px;border-radius:10px}
- header nav .nav-whatsapp{display:flex;margin-top:8px;min-height:50px;border-radius:999px;background:var(--blue);color:#fff;justify-content:space-between}
+ header nav .nav-whatsapp{display:flex;width:100%;box-sizing:border-box;margin-top:8px;padding:12px 16px;min-height:50px;border-radius:999px;background:var(--blue);color:#fff;justify-content:space-between;gap:16px}
  .section{padding:62px 20px}
  .brand-hero .wordmark{padding:22px 20px 19px;font-size:clamp(58px,17vw,80px);background:var(--surface)}
  .brand-hero__image{height:clamp(260px,69vw,380px);object-position:right center}
