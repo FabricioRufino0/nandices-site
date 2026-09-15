@@ -16,7 +16,7 @@ export default function BrandHero({docinhos=false}){
    <img className="brand-hero__image" src={docinhos?'/images/docinhos/docinhos-hero.webp':'/images/brand/hero-nandices.png'} width="2172" height="724" loading="eager" fetchPriority="high" decoding="async" alt={docinhos?'Caixinha de brigadeiros variados da Nandices Confeitaria':'Bolo da Nandices Confeitaria'}/>
   </picture>
   <div className="brand-hero__actions">
-   <button type="button" className="button" onClick={()=>scrollTo(docinhos?'#catalog-title':'.cakes')}>Ver sabores <span aria-hidden="true">↗</span></button>
+   <button type="button" className="button" onClick={()=>scrollTo(docinhos?'#catalog-title':'.cakes')}>{docinhos?'Ver catálogo':'Ver nossos bolos'} <span aria-hidden="true">↗</span></button>
    {docinhos?<button type="button" className="button button-secondary" onClick={()=>scrollTo('#caixa-degustacao')}>Caixa Degustação <span aria-hidden="true">↗</span></button>:<a className="button button-secondary" href="/docinhos">Ver docinhos <span aria-hidden="true">↗</span></a>}
   </div>
  </section>;

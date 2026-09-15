@@ -25,8 +25,9 @@ test('CTAs e apresentação das forminhas mantêm a navegação interna sem hash
  const hero=await readFile('src/components/BrandHero.jsx','utf8');
  const catalog=await readFile('src/components/SweetsCatalog.jsx','utf8');
  assert.match(hero,/scrollTo\(docinhos\?'#catalog-title':'.cakes'\)/);
- assert.match(hero,/Ver docinhos/);assert.match(hero,/Caixa Degustação/);
+ assert.match(hero,/Ver docinhos/);assert.match(hero,/Ver nossos bolos/);assert.match(hero,/Ver catálogo/);assert.match(hero,/Caixa Degustação/);
  assert.match(catalog,/Forminhas para combinar com cada detalhe/);
+ assert.match(catalog,/Nosso catálogo de docinhos/);assert.match(catalog,/IntersectionObserver/);assert.match(catalog,/catalog-rail/);
  assert.match(catalog,/Branquinho, Pistache e Chocolate/);
  assert.doesNotMatch(catalog,/selectedCup|sessionStorage|Selecionar/);
 });
