@@ -28,5 +28,11 @@ test('experiência orienta a escolha e mantém o catálogo confortável em mobil
   await expect(page.locator('#caixa-degustacao')).toContainText('R$ 65,00');
   await expect(page.locator('#caixa-degustacao')).toContainText('7 dias');
   assert.ok(!await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth));
+
+  await page.setViewportSize({width:390,height:844});
+  await page.getByRole('button',{name:'Menu',exact:true}).click();
+  await page.locator('#navigation').getByRole('link',{name:'Personalizados',exact:true}).click();
+  await expect(page).toHaveURL(/127\.0\.0\.1:\d+\/$/);
+  await expect(page.locator('.personal')).toBeInViewport();
  }finally{await browser?.close();await server.close()}
 });

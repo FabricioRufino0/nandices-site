@@ -55,20 +55,23 @@ function App(){
  const path=window.location.pathname.replace(/\/$/,'')||'/';
  const [menu,setMenu]=useState(false);
  useEffect(()=>{const meta=routeMetadata[path]||routeMetadata['/'];document.title=meta.title;document.querySelector('meta[name="description"]')?.setAttribute('content',meta.description)},[path]);
+ useEffect(()=>{if(path!=='/'||new URLSearchParams(window.location.search).get('section')!=='personalizados')return;const behavior=matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';window.setTimeout(()=>{document.querySelector('.personal')?.scrollIntoView({behavior,block:'start'});window.history.replaceState(null,'','/');},0)},[path]);
  const nav=[
   {href:'/',label:'Bolos',target:'.cakes'},
   {href:'/docinhos',label:'Docinhos',target:'#catalog-title'},
-  {href:'/',label:'Personalizados',target:'.personal'},
+  {href:'/',label:'Personalizados',target:'.personal',crossTarget:'/?section=personalizados'},
   {href:'/frete',label:'Entrega e frete'}
  ];
  const navigateTo=item=>event=>{
   setMenu(false);
+  if(path!==item.href&&item.crossTarget){event.preventDefault();window.location.assign(item.crossTarget);return;}
   if(path!==item.href||!item.target)return;
   event.preventDefault();
   document.querySelector(item.target)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
  };
  const isCurrent=item=>path==='/docinhos'?item.label==='Docinhos':path==='/frete'?item.label==='Entrega e frete':item.label==='Bolos';
- return <><a className="skip" href="#conteudo">Pular para o conteúdo</a><header><a className="wordmark" href="/" aria-label="Nandices Confeitaria, início"><BrandName/><span>CONFEITARIA</span></a><nav id="navigation" className={menu?'open':''} aria-label="Navegação principal">{nav.map(item=><a key={item.label} href={item.href} aria-current={isCurrent(item)?'page':undefined} onClick={navigateTo(item)}>{item.label}</a>)}<WA className="nav-whatsapp" cta_location="menu">Pedir pelo WhatsApp</WA></nav><WA className="button header-cta" cta_location="header"><span className="desktop-label">Pedir pelo WhatsApp</span><span className="mobile-label">Pedir</span></WA><button className="menu-button" aria-expanded={menu} aria-controls="navigation" onClick={()=>setMenu(!menu)}>{menu?'Fechar':'Menu'}</button></header><main id="conteudo">{path==='/docinhos'?<SweetsCatalog/>:path==='/frete'?<><section className="section page-intro"><p className="eyebrow">ENTREGA NO DF</p><h1>Consulte o frete</h1><p>Informe o CEP para consultar a estimativa de entrega.</p></section><Delivery/></>:path==='/'?<Home/>:<section className="section page-intro"><h1>Página não encontrada</h1><a className="button" href="/">Voltar ao início</a></section>}</main><footer><a href="/" className="wordmark"><BrandName/><span>CONFEITARIA</span></a><a href="https://www.instagram.com/nandices.confeitaria/" target="_blank" rel="noopener noreferrer">Instagram <Arrow/></a><span>© {new Date().getFullYear()} Nandices Confeitaria</span></footer></>;
+ const navLink=item=>path!==item.href&&item.crossTarget?item.crossTarget:item.href;
+ return <><a className="skip" href="#conteudo">Pular para o conteúdo</a><header><a className="wordmark" href="/" aria-label="Nandices Confeitaria, início"><BrandName/><span>CONFEITARIA</span></a><nav id="navigation" className={menu?'open':''} aria-label="Navegação principal">{nav.map(item=><a key={item.label} href={navLink(item)} aria-current={isCurrent(item)?'page':undefined} onClick={navigateTo(item)}>{item.label}</a>)}<WA className="nav-whatsapp" cta_location="menu">Pedir pelo WhatsApp</WA></nav><WA className="button header-cta" cta_location="header"><span className="desktop-label">Pedir pelo WhatsApp</span><span className="mobile-label">Pedir</span></WA><button className="menu-button" aria-expanded={menu} aria-controls="navigation" onClick={()=>setMenu(!menu)}>{menu?'Fechar':'Menu'}</button></header><main id="conteudo">{path==='/docinhos'?<SweetsCatalog/>:path==='/frete'?<><section className="section page-intro"><p className="eyebrow">ENTREGA NO DF</p><h1>Consulte o frete</h1><p>Informe o CEP para consultar a estimativa de entrega.</p></section><Delivery/></>:path==='/'?<Home/>:<section className="section page-intro"><h1>Página não encontrada</h1><a className="button" href="/">Voltar ao início</a></section>}</main><footer><a href="/" className="wordmark"><BrandName/><span>CONFEITARIA</span></a><a href="https://www.instagram.com/nandices.confeitaria/" target="_blank" rel="noopener noreferrer">Instagram <Arrow/></a><span>© {new Date().getFullYear()} Nandices Confeitaria</span></footer></>;
 }
 
 createRoot(document.getElementById('root')).render(<App/>);
