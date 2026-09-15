@@ -96,7 +96,7 @@ header nav a[aria-current=page]{background:var(--cream-soft);color:var(--blue-de
 
 .about{max-width:1240px;margin:0 auto 70px;padding:70px!important;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface)}
 .about>div:first-child{padding-right:50px;border-right:1px solid var(--line)}
-.about>div:last-child>p:first-child::first-letter{float:left;margin:7px 8px 0 0;font-family:var(--font-display);font-size:65px;line-height:.7;color:var(--caramel)}
+.about>div:last-child>p:first-child::first-letter{float:none;margin:0 8px 0 0;font-family:var(--font-display);font-size:65px;line-height:.7;vertical-align:-.16em;color:var(--caramel)}
 
 .contact{position:relative;overflow:hidden;background:var(--blue-deep)}
 .contact::before,.contact::after{content:'';position:absolute;border:1px solid rgba(255,255,255,.1);border-radius:50%;pointer-events:none}
