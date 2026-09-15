@@ -2,6 +2,7 @@ import {EVENTS, LOT_SIZE, CAKE} from '../data/commerce.js';
 
 const validGuests = guests => Number.isSafeInteger(guests) && guests >= 1;
 const commercial = value => Math.max(LOT_SIZE, Math.ceil(value / LOT_SIZE) * LOT_SIZE);
+export const formatSweetsRange = ({min,max}) => min===max ? `${min}` : `${min} a ${max}`;
 
 export function estimateSweets(eventId, guests) {
   const event = EVENTS.find(item => item.id === eventId);

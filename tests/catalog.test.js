@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {estimateCake,estimateSweets} from '../src/lib/planning.js';
+import {estimateCake,estimateSweets,formatSweetsRange} from '../src/lib/planning.js';
 import {sweets} from '../src/data/catalog.js';
 import {routeMetadata} from '../src/data/routes.js';
 import {cakeEstimateMessage,sweetsEstimateMessage} from '../src/lib/orders.js';
@@ -15,6 +15,8 @@ test('estimativa de docinhos usa faixas comerciais de 50',()=>{
  assert.deepEqual(estimateSweets('aniversario',40),{event:'Aniversário',guests:40,min:150,max:200});
  assert.throws(()=>estimateSweets('aniversario',0));assert.throws(()=>estimateSweets('aniversario',2.5));
  const message=sweetsEstimateMessage(estimateSweets('aniversario',40));assert.match(message,/150 a 200/);assert.doesNotMatch(message,/pedido é/i);
+ assert.equal(formatSweetsRange({min:100,max:100}),'100');
+ assert.equal(formatSweetsRange({min:150,max:200}),'150 a 200');
 });
 test('estimativa de bolo respeita mínimo e preço em centavos',()=>{
  for(const [guests,kg,cents] of [[5,1.5,13500],[10,1.5,13500],[20,2,18000],[23,2.3,20700],[25,2.5,22500],[35,3.5,31500]])assert.deepEqual(estimateCake(guests),{guests,kg,estimatedCents:cents});
