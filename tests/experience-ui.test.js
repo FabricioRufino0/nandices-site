@@ -1,0 +1,32 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {createServer} from 'vite';
+import {chromium,expect} from '@playwright/test';
+
+test('experiência orienta a escolha e mantém o catálogo confortável em mobile',async()=>{
+ const server=await createServer({logLevel:'silent',server:{host:'127.0.0.1',port:0}});let browser;
+ try{
+  await server.listen();
+  browser=await chromium.launch({channel:'msedge',headless:true});
+  const page=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});
+  const base=`http://127.0.0.1:${server.httpServer.address().port}`;
+
+  await page.goto(base);
+  await expect(page.getByText('Confeitaria artesanal em Sobradinho, DF',{exact:true})).toBeVisible();
+  await expect(page.locator('.order-guide li')).toHaveCount(3);
+  assert.ok(await page.locator('.cakes').evaluate((cakes)=>cakes.compareDocumentPosition(document.querySelector('.about'))&Node.DOCUMENT_POSITION_FOLLOWING));
+  assert.ok(!await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth));
+
+  await page.goto(base+'/docinhos');
+  const rail=page.locator('.catalog-rail');
+  await expect(rail.getByRole('button',{name:'Tradicionais · 6'})).toBeVisible();
+  await expect(rail.getByRole('button',{name:'Gourmet · 5'})).toBeVisible();
+  await expect(rail.getByRole('button',{name:'Pistache · 1'})).toBeVisible();
+  assert.equal(await rail.evaluate(element=>getComputedStyle(element).flexDirection),'row');
+  assert.ok((await rail.boundingBox()).width>340);
+  await expect(page.locator('.personalized-catalog .personal-photo img')).toBeVisible();
+  await expect(page.locator('#caixa-degustacao')).toContainText('R$ 65,00');
+  await expect(page.locator('#caixa-degustacao')).toContainText('7 dias');
+  assert.ok(!await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth));
+ }finally{await browser?.close();await server.close()}
+});

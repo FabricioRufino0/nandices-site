@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createServer} from 'vite';
 import {chromium,expect} from '@playwright/test';
 
-test('hero: responsive layout, accessible heading and working flavors link',async()=>{
+test('hero: responsive layout, accessible heading and direct product navigation',async()=>{
  const vite=await createServer({logLevel:'silent',server:{host:'127.0.0.1',port:0}});let browser;
  try{
   await vite.listen();browser=await chromium.launch({channel:'msedge',headless:true});
@@ -17,13 +17,13 @@ test('hero: responsive layout, accessible heading and working flavors link',asyn
    assert.ok(await page.locator('.brand-hero__image').evaluate(img=>img.complete&&img.naturalWidth>0));
    if(width<=600){const heading=await page.locator('.brand-hero h1').boundingBox(),image=await page.locator('.brand-hero__image').boundingBox();assert.ok(heading.y+heading.height<=image.y+1)}
    assert.ok(!await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth));
-   const cta=page.getByRole('link',{name:'Ver sabores'});
-   await cta.click();await expect(page).toHaveURL(/#bolos$/);
-   await page.goto(`http://127.0.0.1:${vite.httpServer.address().port}`);await cta.focus();await page.keyboard.press('Enter');
-   await expect(page).toHaveURL(/#bolos$/);
-   const header=await page.locator('header').boundingBox(),cakes=await page.locator('#bolos').boundingBox();
+   const cta=page.getByRole('button',{name:'Ver nossos bolos'});
+   await cta.click();await expect(page).toHaveURL(new RegExp(`:${vite.httpServer.address().port}/$`));
+   const header=await page.locator('header').boundingBox(),cakes=await page.locator('.cakes').boundingBox();
    assert.ok(Math.abs(header.y)<1);assert.ok(cakes.y>=header.height-1&&cakes.y<height);
-   if(width<=800){await page.getByRole('button',{name:'Menu',exact:true}).click();await expect(page.locator('#navigation')).toBeVisible();await page.locator('#navigation').getByRole('link',{name:'Docinhos',exact:true}).click();await expect(page).toHaveURL(/\/docinhos$/);await expect(page.locator('#navigation')).toBeHidden()}
+   await page.evaluate(()=>window.scrollTo(0,0));await cta.focus();await page.keyboard.press('Enter');
+   assert.ok((await page.locator('.cakes').boundingBox()).y>=header.height-1);
+   if(width<=760){await page.getByRole('button',{name:'Menu',exact:true}).click();await expect(page.locator('#navigation')).toBeVisible();await page.locator('#navigation').getByRole('link',{name:'Docinhos',exact:true}).click();await expect(page).toHaveURL(/\/docinhos$/);await expect(page.locator('#navigation')).toBeHidden()}
    assert.deepEqual(errors,[]);await page.close();
   }
  }finally{await browser?.close();await vite.close()}

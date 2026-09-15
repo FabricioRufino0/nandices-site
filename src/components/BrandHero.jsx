@@ -15,6 +15,10 @@ export default function BrandHero({docinhos=false}){
    {!docinhos&&<source type="image/webp" srcSet="/images/brand/hero-nandices-768.webp 768w, /images/brand/hero-nandices-1280.webp 1280w, /images/brand/hero-nandices-2048.webp 2048w" sizes="100vw"/>}
    <img className="brand-hero__image" src={docinhos?'/images/docinhos/docinhos-hero.webp':'/images/brand/hero-nandices.png'} width="2172" height="724" loading="eager" fetchPriority="high" decoding="async" alt={docinhos?'Caixinha de brigadeiros variados da Nandices Confeitaria':'Bolo da Nandices Confeitaria'}/>
   </picture>
+  <div className="brand-hero__context" aria-label="Informações rápidas">
+   <span>Confeitaria artesanal em Sobradinho, DF</span>
+   <span>{docinhos?'12 sabores no catálogo':'Bolos e doces feitos sob encomenda'}</span>
+  </div>
   <div className="brand-hero__actions">
    <button type="button" className="button" onClick={()=>scrollTo(docinhos?'#catalog-title':'.cakes')}>{docinhos?'Ver catálogo':'Ver nossos bolos'} <span aria-hidden="true">↗</span></button>
    {docinhos?<a className="button button-secondary" href="/">Ver nossos bolos <span aria-hidden="true">↗</span></a>:<a className="button button-secondary" href="/docinhos">Ver docinhos <span aria-hidden="true">↗</span></a>}
