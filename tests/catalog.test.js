@@ -27,7 +27,7 @@ test('CTAs e apresentação das forminhas mantêm a navegação interna sem hash
  const hero=await readFile('src/components/BrandHero.jsx','utf8');
  const catalog=await readFile('src/components/SweetsCatalog.jsx','utf8');
  assert.match(hero,/scrollTo\(docinhos\?'#catalog-title':'.cakes'\)/);
- assert.match(hero,/Ver docinhos/);assert.match(hero,/href="\/">Ver nossos bolos/);assert.match(hero,/Ver catálogo/);
+ assert.match(hero,/Ver nossos docinhos/);assert.match(hero,/href="\/">Ver nossos bolos/);assert.match(hero,/Ver catálogo/);
  assert.doesNotMatch(hero,/home-explore|Explore a Nandices|scrollTo\('#caixa-degustacao'\)/);
  assert.match(catalog,/Forminhas para combinar com cada detalhe/);
  assert.match(catalog,/Nosso catálogo de docinhos/);assert.match(catalog,/IntersectionObserver/);assert.match(catalog,/catalog-rail/);
