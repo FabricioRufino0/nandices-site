@@ -27,6 +27,11 @@ test('experiência orienta a escolha e mantém o catálogo confortável em mobil
   await expect(page.locator('.personalized-catalog .personal-photo img')).toBeVisible();
   await expect(page.locator('#caixa-degustacao')).toContainText('R$ 65,00');
   await expect(page.locator('#caixa-degustacao')).toContainText('7 dias');
+  await page.setViewportSize({width:1440,height:900});
+  const contactBox=await page.locator('.catalog-contact').boundingBox();
+  const plannerBox=await page.locator('#quanto-pedir').boundingBox();
+  assert.ok(Math.abs(contactBox.width-plannerBox.width)<2,'catalog contact and estimator should share the same width');
+  await page.setViewportSize({width:390,height:844});
   assert.ok(!await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth));
 
   await page.setViewportSize({width:390,height:844});

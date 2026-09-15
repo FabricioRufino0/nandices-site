@@ -117,6 +117,7 @@ header nav a[aria-current=page]{background:var(--cream-soft);color:var(--blue-de
 .catalog-category>h2::after{content:'';height:1px;flex:1;background:linear-gradient(90deg,var(--caramel),transparent)}
 .catalog-page .sweet-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:26px}
 .catalog-contact{border-radius:var(--radius-lg);background:var(--blue-deep);box-shadow:var(--shadow-soft)}
+.catalog-contact{max-width:1240px;margin:28px auto 44px}
 .cups .cup-catalog figure{border-radius:var(--radius-md)}
 
 .expandable.section{border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow-card)}
@@ -186,7 +187,7 @@ footer{max-width:1340px;margin:auto}
  .catalog-rail button{flex:1 0 auto;min-height:46px;padding:9px 12px;font-size:12px}
  .catalog-category{margin-bottom:58px;scroll-margin-top:150px}
  .catalog-page .sweet-grid{grid-template-columns:1fr;gap:22px}
- .catalog-contact{margin-inline:12px;border-radius:20px}
+ .catalog-contact{margin:18px 20px 32px;border-radius:20px}
  .planner form>.button{margin-top:16px}
  .cups{padding-inline:20px}
  footer{padding-inline:22px}
