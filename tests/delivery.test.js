@@ -3,8 +3,25 @@ import assert from 'node:assert/strict';
 import {handleDelivery} from '../worker/delivery.js';
 const env={MAPBOX_ACCESS_TOKEN:'mapbox-test-secret',DELIVERY_ORIGIN:'Condomínio RK, Sobradinho - DF',VEHICLE_KM_PER_LITER:'12',FUEL_PRICE:'4.19',DELIVERY_TRIP_MODE:'round-trip'};
 const request=(body={cep:'71540035'},headers={})=>new Request('https://example.test/api/delivery',{method:'POST',headers:{'Content-Type':'application/json',...headers},body:JSON.stringify(body)});
-function fake({meters=[12000,8400],features=true}={}){const calls=[];const fetcher=async url=>{const u=String(url);calls.push(u);if(u.startsWith('https://viacep.com.br'))return Response.json({cep:'71540-035',uf:'DF',logradouro:'Rua das Flores',bairro:'Águas Claras',localidade:'Brasília'});if(u.startsWith('https://api.mapbox.com/search/geocode/v6/forward'))return Response.json({features:features?[{type:'Feature',geometry:{type:'Point',coordinates:[-47.8,-15.7]},properties:{}}]:[]});if(u.startsWith('https://api.mapbox.com/directions/v5/mapbox/driving/'))return Response.json({code:'Ok',routes:[{distance:meters.shift()}]});throw new Error('unexpected provider')};return {calls,fetcher}}
-test('Mapbox flow calculates round-trip without exposing private data',async()=>{const {calls,fetcher}=fake();const res=await handleDelivery(request(),env,fetcher);const body=await res.json();assert.equal(res.status,200);assert.equal(body.status,'estimated');assert.equal(body.distanceKm,12);assert.equal(body.billableDistanceKm,20.4);assert.equal(body.estimatedCents,Math.round(20.4/12*4.19*100));assert.equal(calls.filter(x=>x.includes('/search/geocode/v6/forward')).length,2);assert.equal(calls.filter(x=>x.includes('/directions/v5/mapbox/driving/')).length,2);assert.ok(!JSON.stringify(body).includes('Condomínio'));assert.ok(!JSON.stringify(body).includes('mapbox-test-secret'));});
+function fake({meters=[12000,8400],features=true}={}){const calls=[];let geocodes=0;const fetcher=async url=>{const u=String(url);calls.push(u);if(u.startsWith('https://viacep.com.br'))return Response.json({cep:'71540-035',uf:'DF',logradouro:'Rua das Flores',bairro:'Águas Claras',localidade:'Brasília'});if(u.startsWith('https://api.mapbox.com/search/geocode/v6/forward'))return Response.json({features:features?[{type:'Feature',geometry:{type:'Point',coordinates:geocodes++===0?[-47.8,-15.7]:[-47.823,-15.689]},properties:{}}]:[]});if(u.startsWith('https://api.mapbox.com/directions/v5/mapbox/driving/'))return Response.json({code:'Ok',routes:[{distance:meters.shift()}]});throw new Error('unexpected provider')};return {calls,fetcher}}
+test('Mapbox flow calculates round-trip without exposing private data',async()=>{const {calls,fetcher}=fake();const res=await handleDelivery(request(),env,fetcher);const body=await res.json();assert.equal(res.status,200);assert.equal(body.status,'estimated');assert.equal(body.distanceKm,12);assert.equal(body.billableDistanceKm,20.4);assert.equal(body.estimatedCents,Math.round(20.4/12*4.19*100));assert.equal(calls.filter(x=>x.includes('/search/geocode/v6/forward')).length,2);assert.equal(calls.filter(x=>x.includes('/directions/v5/mapbox/driving/')).length,2);assert.match(calls.find(x=>x.includes('/directions/v5/mapbox/driving/')),/-47\.823,-15\.689;-47\.8,-15\.7/);assert.ok(!JSON.stringify(body).includes('Condomínio'));assert.ok(!JSON.stringify(body).includes('mapbox-test-secret'));});
 test('invalid CEP is rejected before providers',async()=>{let calls=0;const res=await handleDelivery(request({cep:'bad'}),env,async()=>{calls++});assert.equal(res.status,400);assert.equal(calls,0);});
 test('strict content type, body limit and same origin',async()=>{assert.equal((await handleDelivery(request({}, {'Content-Type':'application/jsonish'}),env)).status,415);assert.equal((await handleDelivery(request({}, {'Content-Length':'4097'}),env)).status,413);assert.equal((await handleDelivery(request({}, {Origin:'https://foreign.test'}),env)).status,403);});
 test('rate limit blocks before providers',async()=>{let called=false;const res=await handleDelivery(request(),{...env,DELIVERY_RATE_LIMITER:{limit:async()=>({success:false})}},async()=>{called=true});assert.equal(res.status,429);assert.equal(called,false);});
+test('origin geocoded near Asa Norte uses RK reference for the route',async()=>{
+ const routes=[];
+ const fetcher=async url=>{
+  const u=String(url);
+  if(u.startsWith('https://viacep.com.br'))return Response.json({cep:'70735-060',uf:'DF',logradouro:'SQN 303 Bloco F',bairro:'Asa Norte',localidade:'Brasília'});
+  if(u.includes('/search/geocode/v6/forward'))return Response.json({features:[{geometry:{type:'Point',coordinates:[-47.8857,-15.7792]}}]});
+  if(u.includes('/directions/v5/mapbox/driving/')){routes.push(u);return Response.json({code:'Ok',routes:[{distance:routes.length===1?18700:18490}]});}
+  throw new Error('unexpected provider');
+ };
+ const res=await handleDelivery(request({cep:'70735-060'}),env,fetcher);
+ const body=await res.json();
+ assert.equal(res.status,200);
+ assert.equal(body.distanceKm,18.7);
+ assert.equal(body.billableDistanceKm,37.19);
+ assert.equal(body.estimatedCents,1299);
+ assert.match(routes[0],/-47\.823308,-15\.6891943;-47\.8857,-15\.7792/);
+});

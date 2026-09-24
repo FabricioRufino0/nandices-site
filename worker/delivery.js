@@ -6,6 +6,8 @@ export const PRIVATE_BINDINGS = ['MAPBOX_ACCESS_TOKEN', 'DELIVERY_ORIGIN'];
 
 const MAPBOX_GEOCODING = 'https://api.mapbox.com/search/geocode/v6/forward';
 const MAPBOX_DIRECTIONS = 'https://api.mapbox.com/directions/v5/mapbox/driving';
+// Public RK reference; a geocoder can resolve the private origin to an unrelated part of Brasília.
+const RK_REFERENCE = {coordinates:[-47.823308,-15.6891943]};
 const reply = (body, status = 200) => Response.json(body, {status, headers: {'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff'}});
 const failure = (httpStatus, review = false) => reply({status: review ? 'address_review_required' : 'unavailable', error: review ? ADDRESS_REVIEW : FALLBACK}, httpStatus);
 
@@ -83,6 +85,12 @@ async function viacepFetch(cep, fetcher, signal) {
 }
 
 function validPoint(feature) { const c = feature?.geometry?.coordinates; return feature?.geometry?.type === 'Point' && Array.isArray(c) && c.length === 2 && Number.isFinite(c[0]) && Number.isFinite(c[1]) && c[0] >= -180 && c[0] <= 180 && c[1] >= -90 && c[1] <= 90; }
+function nearRk({coordinates:[lon,lat]}) {
+  const [rkLon,rkLat] = RK_REFERENCE.coordinates;
+  const latKm = (lat-rkLat)*111.2;
+  const lonKm = (lon-rkLon)*111.2*Math.cos(rkLat*Math.PI/180);
+  return Math.hypot(latKm,lonKm) <= 5;
+}
 async function geocode(text, key, fetcher, signal, kind) {
   const url = new URL(MAPBOX_GEOCODING); url.search = new URLSearchParams({q:text,country:'BR',language:'pt',autocomplete:'false',limit:'5',access_token:key}).toString();
   const data = await providerJson(fetcher, url, {headers:{Accept:'application/json'}}, signal);
@@ -134,8 +142,9 @@ export async function handleDelivery(request, env, fetcher = fetch) {
     // Destination: loose geocoding from the structured address obtained by ViaCEP.
     const destination = await geocode(via.address, env.MAPBOX_ACCESS_TOKEN, fetcher, signal, 'destination_not_found');
 
-    // Origin: the private environment address stays under strict origin validation.
-    const source = await geocode(env.DELIVERY_ORIGIN, env.MAPBOX_ACCESS_TOKEN, fetcher, signal, 'origin_not_found');
+    // Keep the private origin only when Mapbox resolves it inside the RK area.
+    const geocodedSource = await geocode(env.DELIVERY_ORIGIN, env.MAPBOX_ACCESS_TOKEN, fetcher, signal, 'origin_not_found');
+    const source = nearRk(geocodedSource) ? geocodedSource : RK_REFERENCE;
 
     const outbound = await routeDistance(source, destination, env.MAPBOX_ACCESS_TOKEN, fetcher, signal);
     const inbound = config.tripMode === 'round-trip' ? await routeDistance(destination, source, env.MAPBOX_ACCESS_TOKEN, fetcher, signal) : 0;
