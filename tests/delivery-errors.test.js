@@ -5,7 +5,7 @@ import {handleDelivery,FALLBACK} from '../worker/delivery.js';
 const env={MAPBOX_ACCESS_TOKEN:'private-token-marker',DELIVERY_ORIGIN:'private-origin-marker',VEHICLE_KM_PER_LITER:'12',FUEL_PRICE:'4.19',DELIVERY_TRIP_MODE:'round-trip'};
 const address={cep:'71540-035',uf:'DF',logradouro:'private-street-marker',bairro:'private-neighborhood-marker',localidade:'Brasília'};
 const stages=['viacep','destination','origin','outbound','inbound'];
-const point={type:'Feature',geometry:{type:'Point',coordinates:[-47.812345,-15.712345]},properties:{}};
+const point={type:'Feature',geometry:{type:'Point',coordinates:[-47.812345,-15.712345]},properties:{context:{postcode:{name:'71540-035'}}}};
 const privateData=[env.MAPBOX_ACCESS_TOKEN,env.DELIVERY_ORIGIN,address.logradouro,address.bairro,'-47.812345','-15.712345','access_token','coordinates','longitude','latitude'];
 const sensitiveMessage=privateData.join(' ');
 const request=(body={cep:'71540-035'},headers={})=>new Request('https://example.test/api/delivery',{method:'POST',headers:{'Content-Type':'application/json',...headers},body:JSON.stringify(body)});
