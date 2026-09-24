@@ -165,7 +165,7 @@ export async function handleDelivery(request, env, fetcher = fetch) {
 
     const distanceKm = outbound / 1000;
     const billableDistanceKm = (outbound + inbound) / 1000;
-    const estimatedCents = Math.round(billableDistanceKm / config.efficiency * config.fuelPrice * 100);
+    const estimatedCents = Math.ceil(Math.round(billableDistanceKm / config.efficiency * config.fuelPrice * 100) / 100) * 100;
 
     if (!Number.isSafeInteger(estimatedCents) || estimatedCents < 0) throw new DeliveryError(502, false, 'calculation_invalid');
 
