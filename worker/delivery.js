@@ -139,6 +139,12 @@ export async function handleDelivery(request, env, fetcher = fetch) {
     // ViaCEP validates and resolves the destination CEP to a structured address.
     const via = await viacepFetch(cep, fetcher, signal);
 
+    if (new URL(request.url).searchParams.has('diagnosticDestination')) {
+      const url = new URL(MAPBOX_GEOCODING); url.search = new URLSearchParams({q:via.address,country:'BR',language:'pt',autocomplete:'false',limit:'5',access_token:env.MAPBOX_ACCESS_TOKEN}).toString();
+      const data = await providerJson(fetcher,url,{headers:{Accept:'application/json'}},signal);
+      return reply({features:(data.features||[]).map(item=>({type:item.properties?.feature_type,name:item.properties?.name,place:item.properties?.place_formatted,postcode:item.properties?.context?.postcode?.name,locality:item.properties?.context?.locality?.name,coordinates:item.geometry?.coordinates}))});
+    }
+
     // Destination: loose geocoding from the structured address obtained by ViaCEP.
     const destination = await geocode(via.address, env.MAPBOX_ACCESS_TOKEN, fetcher, signal, 'destination_not_found', cep);
 
