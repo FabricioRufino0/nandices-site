@@ -85,6 +85,10 @@ async function viacepFetch(cep, fetcher, signal) {
 }
 
 function validPoint(feature) { const c = feature?.geometry?.coordinates; return feature?.geometry?.type === 'Point' && Array.isArray(c) && c.length === 2 && Number.isFinite(c[0]) && Number.isFinite(c[1]) && c[0] >= -180 && c[0] <= 180 && c[1] >= -90 && c[1] <= 90; }
+function postcodeDigits(feature) {
+  const properties = feature?.properties;
+  return String(properties?.context?.postcode?.name ?? (properties?.feature_type === 'postcode' ? properties.name : '')).replace(/\D/g,'');
+}
 function nearRk({coordinates:[lon,lat]}) {
   const [rkLon,rkLat] = RK_REFERENCE.coordinates;
   const latKm = (lat-rkLat)*111.2;
@@ -94,7 +98,10 @@ function nearRk({coordinates:[lon,lat]}) {
 async function geocode(text, key, fetcher, signal, kind, expectedCep) {
   const url = new URL(MAPBOX_GEOCODING); url.search = new URLSearchParams({q:text,country:'BR',language:'pt',autocomplete:'false',limit:'5',access_token:key}).toString();
   const data = await providerJson(fetcher, url, {headers:{Accept:'application/json'}}, signal);
-  const feature = Array.isArray(data?.features) ? data.features.find(item => validPoint(item) && (!expectedCep || normalizeCep(item.properties?.context?.postcode?.name) === expectedCep || (item.properties?.feature_type === 'postcode' && normalizeCep(item.properties.name) === expectedCep))) : null;
+  const features = Array.isArray(data?.features) ? data.features.filter(validPoint) : [];
+  const feature = expectedCep
+    ? features.find(item => postcodeDigits(item) === expectedCep) || features.find(item => postcodeDigits(item).slice(0,5) === expectedCep.slice(0,5))
+    : features[0];
   if (!feature) throw new DeliveryError(422, true, kind);
   return {coordinates:feature.geometry.coordinates};
 }
@@ -138,12 +145,6 @@ export async function handleDelivery(request, env, fetcher = fetch) {
 
     // ViaCEP validates and resolves the destination CEP to a structured address.
     const via = await viacepFetch(cep, fetcher, signal);
-
-    if (new URL(request.url).searchParams.has('diagnosticDestination')) {
-      const url = new URL(MAPBOX_GEOCODING); url.search = new URLSearchParams({q:via.address,country:'BR',language:'pt',autocomplete:'false',limit:'5',access_token:env.MAPBOX_ACCESS_TOKEN}).toString();
-      const data = await providerJson(fetcher,url,{headers:{Accept:'application/json'}},signal);
-      return reply({features:(data.features||[]).map(item=>({type:item.properties?.feature_type,name:item.properties?.name,place:item.properties?.place_formatted,postcode:item.properties?.context?.postcode?.name,locality:item.properties?.context?.locality?.name,coordinates:item.geometry?.coordinates}))});
-    }
 
     // Destination: loose geocoding from the structured address obtained by ViaCEP.
     const destination = await geocode(via.address, env.MAPBOX_ACCESS_TOKEN, fetcher, signal, 'destination_not_found', cep);

@@ -46,7 +46,7 @@ test('destination chooses a later Mapbox result with the requested CEP',async()=
   if(u.startsWith('https://viacep.com.br'))return Response.json({cep:'72405-610',uf:'DF',logradouro:'Área Especial 1',bairro:'Setor Central (Gama)',localidade:'Brasília'});
   if(u.includes('/search/geocode/v6/forward'))return Response.json({features:geocodes++===0?[
    {geometry:{type:'Point',coordinates:[-47.88,-15.75]},properties:{context:{postcode:{name:'70735-060'}}}},
-   {geometry:{type:'Point',coordinates:[-48.0675,-16.0204]},properties:{context:{postcode:{name:'72405-610'}}}}
+   {geometry:{type:'Point',coordinates:[-48.0675,-16.0204]},properties:{feature_type:'street',context:{postcode:{name:'72405-135'}}}}
   ]:[{geometry:{type:'Point',coordinates:[-47.823,-15.689]},properties:{}}]});
   if(u.includes('/directions/v5/mapbox/driving/')){route??=u;return Response.json({code:'Ok',routes:[{distance:51400}]});}
   throw new Error('unexpected provider');
