@@ -98,10 +98,17 @@ function nearRk({coordinates:[lon,lat]}) {
 async function geocode(text, key, fetcher, signal, kind, expectedCep) {
   const url = new URL(MAPBOX_GEOCODING); url.search = new URLSearchParams({q:text,country:'BR',language:'pt',autocomplete:'false',limit:'5',access_token:key}).toString();
   const data = await providerJson(fetcher, url, {headers:{Accept:'application/json'}}, signal);
-  const features = Array.isArray(data?.features) ? data.features.filter(validPoint) : [];
-  const feature = expectedCep
-    ? features.find(item => postcodeDigits(item) === expectedCep) || features.find(item => postcodeDigits(item).slice(0,5) === expectedCep.slice(0,5))
-    : features[0];
+  const match = data => {
+    const features = Array.isArray(data?.features) ? data.features.filter(validPoint) : [];
+    return expectedCep
+      ? features.find(item => postcodeDigits(item) === expectedCep) || features.find(item => postcodeDigits(item).slice(0,5) === expectedCep.slice(0,5))
+      : features[0];
+  };
+  let feature = match(data);
+  if (!feature && expectedCep && data?.features?.length) {
+    url.searchParams.set('q',expectedCep);
+    feature = match(await providerJson(fetcher,url,{headers:{Accept:'application/json'}},signal));
+  }
   if (!feature) throw new DeliveryError(422, true, kind);
   return {coordinates:feature.geometry.coordinates};
 }

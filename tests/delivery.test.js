@@ -55,3 +55,21 @@ test('destination chooses a later Mapbox result with the requested CEP',async()=
  assert.equal(response.status,200);
  assert.match(route,/-47\.823,-15\.689;-48\.0675,-16\.0204/);
 });
+test('destination retries by CEP when address results belong to another postal sector',async()=>{
+ const searches=[];
+ const fetcher=async url=>{
+  const u=new URL(url);
+  if(u.hostname==='viacep.com.br')return Response.json({cep:'71503-502',uf:'DF',logradouro:'Quadra CA 2',bairro:'Setor de Habitações Individuais Norte',localidade:'Brasília'});
+  if(u.pathname==='/search/geocode/v6/forward'){
+   searches.push(u.searchParams.get('q'));
+   return Response.json({features:[{geometry:{type:'Point',coordinates:searches.length===1?[-47.88,-15.75]:[-47.86,-15.73]},properties:{feature_type:'postcode',name:searches.length===1?'70735':'71503'}}]});
+  }
+  if(u.pathname.startsWith('/directions/v5/mapbox/driving/'))return Response.json({code:'Ok',routes:[{distance:16000}]});
+  throw new Error('unexpected provider');
+ };
+ const response=await handleDelivery(request({cep:'71503-502'}),env,fetcher);
+ assert.equal(response.status,200);
+ assert.equal((await response.json()).distanceKm,16);
+ assert.equal(searches.length,3);
+ assert.equal(searches[1],'71503502');
+});
