@@ -10,8 +10,8 @@ export default function OrderGuide(){
  return <section className="order-guide section" aria-labelledby="order-guide-title">
   <div className="order-guide__intro">
    <p className="eyebrow">COMO ENCOMENDAR</p>
-   <h2 id="order-guide-title">Seu pedido, do seu jeito e sem complicação.</h2>
-   <p>O site ajuda você a conhecer as opções. A Nanda cuida pessoalmente dos detalhes pelo WhatsApp.</p>
+   <h2 id="order-guide-title">Escolha seus favoritos e fale com a Nanda.</h2>
+   <p>Pelo WhatsApp, ela confirma disponibilidade, valor e entrega com você.</p>
   </div>
   <ol>{steps.map(([number,title,description])=><li key={number}><span aria-hidden="true">{number}</span><div><h3>{title}</h3><p>{description}</p></div></li>)}</ol>
  </section>;

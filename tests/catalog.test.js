@@ -9,7 +9,7 @@ import {readFile} from 'node:fs/promises';
 test('catálogo mantém as três categorias e os 12 docinhos simultaneamente',()=>{
  assert.equal(sweets.length,12);
  assert.deepEqual(sweets.reduce((total,item)=>({...total,[item.category]:(total[item.category]||0)+1}),{}),{Tradicional:6,Gourmet:5,Pistache:1});
- assert.deepEqual(Object.keys(routeMetadata),['/','/docinhos','/frete']);
+ assert.deepEqual(Object.keys(routeMetadata),['/','/docinhos','/estimativa','/caixa-degustacao','/personalizados','/frete']);
 });
 test('estimativa de docinhos usa faixas comerciais de 50',()=>{
  assert.deepEqual(estimateSweets('aniversario',40),{event:'Aniversário',guests:40,min:150,max:200});
