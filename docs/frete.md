@@ -4,7 +4,7 @@ O frontend envia somente `{cep: "70000000"}` a /api/delivery. Frontend e Worker 
 
 O Worker valida o CEP no ViaCEP, geocodifica o endereço e a origem privada no Mapbox e consulta as rotas de carro no Mapbox Directions.
 
-O destino precisa ter endereço do DF retornado pelo ViaCEP e coordenadas válidas no Mapbox. A origem geocodificada só é usada quando fica até 5 km do ponto público de referência do Condomínio RK. Fora desse raio, o cálculo usa esse ponto de referência para evitar uma rota curta a partir de uma localização incorreta. Como o CEP representa uma área e o ponto do RK não é a casa exata, o frete continua aproximado.
+O destino precisa ter endereço do DF retornado pelo ViaCEP e coordenadas válidas no Mapbox. O Worker prefere um resultado com o CEP completo solicitado; quando o Mapbox fornece apenas o setor postal, aceita um resultado com os mesmos cinco primeiros dígitos. Se a busca pelo endereço não corresponder, consulta o CEP diretamente. Sem correspondência, não informa um valor automático e encaminha para confirmação pelo WhatsApp. A origem geocodificada só é usada quando fica até 5 km do ponto público de referência do Condomínio RK. Fora desse raio, o cálculo usa esse ponto de referência para evitar uma rota curta a partir de uma localização incorreta. Como o CEP representa uma área e o ponto do RK não é a casa exata, o frete continua aproximado.
 
 A origem textual vem de DELIVERY_ORIGIN; a chave é MAPBOX_ACCESS_TOKEN. VEHICLE_KM_PER_LITER, FUEL_PRICE e DELIVERY_TRIP_MODE continuam privados/configurados no Worker. Fórmula: distância faturável / consumo * preço do combustível, arredondada em centavos; round-trip consulta ida e volta independentemente. A fórmula cobre apenas combustível.
 

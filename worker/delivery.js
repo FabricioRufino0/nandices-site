@@ -85,16 +85,30 @@ async function viacepFetch(cep, fetcher, signal) {
 }
 
 function validPoint(feature) { const c = feature?.geometry?.coordinates; return feature?.geometry?.type === 'Point' && Array.isArray(c) && c.length === 2 && Number.isFinite(c[0]) && Number.isFinite(c[1]) && c[0] >= -180 && c[0] <= 180 && c[1] >= -90 && c[1] <= 90; }
+function postcodeDigits(feature) {
+  const properties = feature?.properties;
+  return String(properties?.context?.postcode?.name ?? (properties?.feature_type === 'postcode' ? properties.name : '')).replace(/\D/g,'');
+}
 function nearRk({coordinates:[lon,lat]}) {
   const [rkLon,rkLat] = RK_REFERENCE.coordinates;
   const latKm = (lat-rkLat)*111.2;
   const lonKm = (lon-rkLon)*111.2*Math.cos(rkLat*Math.PI/180);
   return Math.hypot(latKm,lonKm) <= 5;
 }
-async function geocode(text, key, fetcher, signal, kind) {
+async function geocode(text, key, fetcher, signal, kind, expectedCep) {
   const url = new URL(MAPBOX_GEOCODING); url.search = new URLSearchParams({q:text,country:'BR',language:'pt',autocomplete:'false',limit:'5',access_token:key}).toString();
   const data = await providerJson(fetcher, url, {headers:{Accept:'application/json'}}, signal);
-  const feature = Array.isArray(data?.features) ? data.features.find(validPoint) : null;
+  const match = data => {
+    const features = Array.isArray(data?.features) ? data.features.filter(validPoint) : [];
+    return expectedCep
+      ? features.find(item => postcodeDigits(item) === expectedCep) || features.find(item => postcodeDigits(item).slice(0,5) === expectedCep.slice(0,5))
+      : features[0];
+  };
+  let feature = match(data);
+  if (!feature && expectedCep && data?.features?.length) {
+    url.searchParams.set('q',expectedCep);
+    feature = match(await providerJson(fetcher,url,{headers:{Accept:'application/json'}},signal));
+  }
   if (!feature) throw new DeliveryError(422, true, kind);
   return {coordinates:feature.geometry.coordinates};
 }
@@ -140,7 +154,7 @@ export async function handleDelivery(request, env, fetcher = fetch) {
     const via = await viacepFetch(cep, fetcher, signal);
 
     // Destination: loose geocoding from the structured address obtained by ViaCEP.
-    const destination = await geocode(via.address, env.MAPBOX_ACCESS_TOKEN, fetcher, signal, 'destination_not_found');
+    const destination = await geocode(via.address, env.MAPBOX_ACCESS_TOKEN, fetcher, signal, 'destination_not_found', cep);
 
     // Keep the private origin only when Mapbox resolves it inside the RK area.
     const geocodedSource = await geocode(env.DELIVERY_ORIGIN, env.MAPBOX_ACCESS_TOKEN, fetcher, signal, 'origin_not_found');
