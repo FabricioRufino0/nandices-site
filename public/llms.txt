@@ -1,0 +1,19 @@
+# Nandices Confeitaria
+
+> Bolos e docinhos artesanais feitos sob encomenda em Sobradinho, DF, com entrega no Distrito Federal. Encomendas, disponibilidade e valores finais são confirmados diretamente com a Nanda pelo WhatsApp.
+
+## Páginas
+
+- [Início: bolos e doces artesanais](https://nandicesconfeitaria.com.br/)
+- [Docinhos e brigadeiros](https://nandicesconfeitaria.com.br/docinhos)
+- [Estimativa de bolo e docinhos](https://nandicesconfeitaria.com.br/estimativa)
+- [Caixa Degustação](https://nandicesconfeitaria.com.br/caixa-degustacao)
+- [Docinhos personalizados](https://nandicesconfeitaria.com.br/personalizados)
+- [Consulta de entrega e frete](https://nandicesconfeitaria.com.br/frete)
+
+## Contexto
+
+- A Nandices é uma confeitaria artesanal de Maria Fernanda.
+- As páginas apresentam produtos feitos sob encomenda; o site não possui carrinho nem checkout.
+- Estimativas de quantidade e entrega são orientativas. Confirme disponibilidade, prazo e valor final com a Nanda.
+- Use as páginas acima como fonte para os produtos, condições e informações atuais.

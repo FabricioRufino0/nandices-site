@@ -15,7 +15,9 @@ main{min-height:65vh}
 nav a[aria-current=page]{color:var(--blue);text-decoration:underline;text-underline-offset:7px}
 .page-intro{padding-block:48px 24px}
 .page-intro h1,.docinhos-intro h1{font-family:var(--font-display);font-weight:500;letter-spacing:-.035em;color:var(--navy);font-size:clamp(48px,5.5vw,76px);line-height:1.04}
-.page-intro p:last-child{max-width:620px;margin-bottom:0;font-size:16px;color:var(--muted)}
+.page-intro > p:not(.eyebrow){max-width:620px;margin-bottom:0;font-size:16px;color:var(--muted)}
+.page-intro__list{max-width:620px;margin:18px 0 0;padding-left:22px;color:var(--muted);font-size:15px;line-height:1.8}
+.page-intro__list li+li{margin-top:6px}
 .docinhos-intro{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:60px;padding-block:48px}
 .docinhos-intro p:not(.eyebrow){max-width:450px;font-size:17px}
 .docinhos-portrait{background:var(--photo);border-radius:3px;overflow:hidden}

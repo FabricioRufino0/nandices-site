@@ -9,12 +9,10 @@ export default function BrandHero({docinhos=false}){
   // Re-align after lazy imagery below the fold has claimed its final layout space.
   window.setTimeout(()=>document.querySelector(selector)?.scrollIntoView(options),450);
  };
+ const image=<img className="brand-hero__image" src={docinhos?'/images/docinhos/docinhos-hero.webp':'/images/brand/hero-nandices.png'} width="2172" height="724" loading="eager" fetchPriority="high" decoding="async" alt={docinhos?'Caixinha de brigadeiros variados da Nandices Confeitaria':'Bolo da Nandices Confeitaria'}/>;
  return <section className="hero brand-hero" aria-label={docinhos?'Docinhos da Nandices Confeitaria':'Nandices Confeitaria'}>
   <h1 className="wordmark" aria-label={docinhos?'Docinhos da Nandices Confeitaria':'Nandices Confeitaria'}><BrandName/><span>CONFEITARIA</span></h1>
-  <picture>
-   {!docinhos&&<source type="image/webp" srcSet="/images/brand/hero-nandices-768.webp 768w, /images/brand/hero-nandices-1280.webp 1280w, /images/brand/hero-nandices-2048.webp 2048w" sizes="100vw"/>}
-   <img className="brand-hero__image" src={docinhos?'/images/docinhos/docinhos-hero.webp':'/images/brand/hero-nandices.png'} width="2172" height="724" loading="eager" fetchPriority="high" decoding="async" alt={docinhos?'Caixinha de brigadeiros variados da Nandices Confeitaria':'Bolo da Nandices Confeitaria'}/>
-  </picture>
+  {docinhos?image:<picture><source type="image/webp" srcSet="/images/brand/hero-nandices-768.webp 768w, /images/brand/hero-nandices-1280.webp 1280w, /images/brand/hero-nandices-2048.webp 2048w" sizes="100vw"/>{image}</picture>}
   <div className="brand-hero__context" aria-label="Informações rápidas">
    <span>Confeitaria artesanal em Sobradinho, DF</span>
    <span>{docinhos?'12 sabores no catálogo':'Bolos e doces feitos sob encomenda'}</span>
