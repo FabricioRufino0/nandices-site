@@ -68,6 +68,7 @@
 
 **Acceptance criteria:**
 - [x] Existing security headers remain, and responses include HSTS, CSP and COOP.
+- [x] CSP permits Cloudflare's injected analytics beacon; static and Worker responses share the same restricted policy.
 - [x] Cloudflare serves a 404 response for unknown paths and the unimplemented MCP discovery URL.
 - [x] Redirect, API, no-trailing-slash canonical routes, sitemap and static discovery files retain the expected status and content type.
 

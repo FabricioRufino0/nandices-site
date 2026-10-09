@@ -11,11 +11,20 @@ test('respostas do Worker para redirect e erro de API incluem headers de seguran
  assert.equal(missingApi.status,404);
  for(const response of [redirect,missingApi]){
   assert.equal(response.headers.get('strict-transport-security'),'max-age=31536000');
-  assert.equal(response.headers.get('content-security-policy'),"default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self'; img-src 'self' https://www.googletagmanager.com https://*.google-analytics.com; font-src 'self'; connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://*.google.com; frame-src https://www.googletagmanager.com");
+  assert.equal(response.headers.get('content-security-policy'),"default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self'; img-src 'self' https://www.googletagmanager.com https://*.google-analytics.com; font-src 'self'; connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://*.google.com; frame-src https://www.googletagmanager.com");
   assert.equal(response.headers.get('cross-origin-opener-policy'),'same-origin');
   assert.equal(response.headers.get('x-frame-options'),'DENY');
   assert.equal(response.headers.get('x-content-type-options'),'nosniff');
  }
+});
+
+test('CSP permite o beacon do Cloudflare Web Analytics sem afrouxar a origem de conexão',async()=>{
+ const staticHeaders=await readFile('public/_headers','utf8');
+ const response=await worker.fetch(new Request('https://nandicesconfeitaria.com.br/api/missing'),{});
+ const csp=response.headers.get('content-security-policy');
+ assert.match(staticHeaders,/Content-Security-Policy:.*script-src[^;]*https:\/\/static\.cloudflareinsights\.com/);
+ assert.match(csp,/script-src[^;]*https:\/\/static\.cloudflareinsights\.com/);
+ assert.match(csp,/connect-src[^;]*'self'/);
 });
 
 test('a página 404 oferece navegação e orientação para continuar no site',async()=>{
