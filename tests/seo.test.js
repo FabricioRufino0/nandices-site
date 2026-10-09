@@ -57,7 +57,7 @@ test('arquivos públicos de descoberta referenciam as páginas canônicas',async
 
 test('o documento declara como encontrar o llms.txt',async()=>{
  const template=await readFile('index.html','utf8');
- assert.ok(template.includes('<link rel="llms" href="/llms.txt"/>'));
+ assert.ok(template.includes('<link rel="describedby" type="text/plain" href="/llms.txt"/>'));
 });
 
 test('HTML inicial de cada página contém H1, conteúdo e links para as seis rotas',async()=>{
