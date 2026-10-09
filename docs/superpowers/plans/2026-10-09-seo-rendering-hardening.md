@@ -73,8 +73,9 @@
 
 ### Final checkpoint
 
-- [x] `npm test` passes (62/62).
+- [x] `npm test -- --test-concurrency=1` passes (64/64).
 - [x] `npm run build` passes and emits six route HTML files plus sitemap and public discovery/error assets.
-- [x] Cloudflare local preview confirms status codes, headers, route content, redirect and API behavior; browser checks confirm no-JavaScript content and hydration.
-- [x] SEOmator full crawl with JavaScript rendering and mobile checks scores 92/A. Checks for SSR, Twitter metadata, semantic structure, schema drift, discovery files and custom 404 pass. Its remaining HTTPS/canonical/sitemap warnings are caused by auditing the local HTTP preview while the generated production robots and canonical URLs correctly point to the HTTPS production domain; direct preview checks confirm six local sitemap `lastmod` entries and route links. The tool also reports no `.well-known` manifest, which is expected because this site does not publish an MCP service.
+- [x] Cloudflare local preview confirms status codes, HSTS/CSP/COOP headers, route content, redirect and API behavior; browser checks confirm no-JavaScript content and hydration, including a simulated 2027 browser clock.
+- [x] SEOmator full crawl with JavaScript rendering scores 92/A across six pages. SSR, unique H1s, Twitter metadata, semantic structure, schema consistency, discovery files, and custom 404 pass. The local HTTP audit reports protocol/canonical/sitemap-domain warnings because production canonicals and sitemap correctly use the HTTPS domain; direct local responses confirm all six `lastmod` entries and security headers. Its missing `.well-known` manifest warning is expected because this site does not publish an MCP service.
+- [x] Final review findings are fixed: the sweets page now has distinct H1 text, and copyright output no longer varies with the server or browser year.
 - [ ] Commit and push to `main` only after final review and the scoped checkpoint.

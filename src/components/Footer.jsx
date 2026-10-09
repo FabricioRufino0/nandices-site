@@ -18,6 +18,6 @@ export default function Footer({path}){
   <h2>{title}</h2>
   <p>{description}</p>
   {href?<a className="button" href={href}>{label} <span aria-hidden="true">↗</span></a>:<WA cta_location="footer" message={message}>{label}</WA>}
-  <div className="site-footer__base"><a href="/" className="wordmark" aria-label="Nandices Confeitaria, início"><BrandName/><span>CONFEITARIA</span></a><a className="text-link" href="https://www.instagram.com/nandices.confeitaria/" target="_blank" rel="noopener noreferrer">@nandices.confeitaria <span aria-hidden="true">↗</span></a><small>© {new Date().getFullYear()} Nandices Confeitaria</small></div>
+  <div className="site-footer__base"><a href="/" className="wordmark" aria-label="Nandices Confeitaria, início"><BrandName/><span>CONFEITARIA</span></a><a className="text-link" href="https://www.instagram.com/nandices.confeitaria/" target="_blank" rel="noopener noreferrer">@nandices.confeitaria <span aria-hidden="true">↗</span></a><small>© Nandices Confeitaria</small></div>
  </footer>;
 }

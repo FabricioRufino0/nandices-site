@@ -6,6 +6,11 @@ import {renderToString} from 'react-dom/server';
 import {build,createServer} from 'vite';
 import {pageMetadataHtml,routeMetadata,sitemapXml} from '../src/data/routes.js';
 
+function h1Text(html){
+ const heading=html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1]||'';
+ return heading.replace(/<!--.*?-->/g,'').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim();
+}
+
 test('cada página compartilha título, descrição, imagem e URL correspondentes',async()=>{
  const template=await readFile('index.html','utf8');
  const origin='https://nandicesconfeitaria.com.br';
@@ -76,6 +81,30 @@ test('HTML inicial de cada página contém H1, conteúdo e links para as seis ro
    if(path==='/docinhos')assert.doesNotMatch(html,/<picture\b/,`${path} não deve usar picture sem source`);
    for(const linkedPath of Object.keys(expected))assert.ok(html.includes(`href="${linkedPath}"`),`${path} deve ligar para ${linkedPath}`);
   }
+ }finally{
+  await server.close();
+ }
+});
+
+test('home e catálogo têm textos de H1 distintos no conteúdo do heading',async()=>{
+ const server=await createServer({root:process.cwd(),configFile:false,logLevel:'silent',appType:'custom',server:{middlewareMode:true}});
+ try{
+  const {default:App}=await server.ssrLoadModule('/src/App.jsx');
+  const homeHeading=h1Text(renderToString(createElement(App,{pathname:'/'})));
+  const sweetsHeading=h1Text(renderToString(createElement(App,{pathname:'/docinhos'})));
+  assert.notEqual(homeHeading,sweetsHeading);
+  assert.match(sweetsHeading,/DOCINHOS ARTESANAIS/i);
+ }finally{
+  await server.close();
+ }
+});
+
+test('rodapé mantém texto de copyright estável entre pré-renderização e hidratação',async()=>{
+ const server=await createServer({root:process.cwd(),configFile:false,logLevel:'silent',appType:'custom',server:{middlewareMode:true}});
+ try{
+  const {default:Footer}=await server.ssrLoadModule('/src/components/Footer.jsx');
+  const html=renderToString(createElement(Footer,{path:'/'}));
+  assert.match(html,/<small>© Nandices Confeitaria<\/small>/);
  }finally{
   await server.close();
  }
