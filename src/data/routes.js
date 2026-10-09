@@ -4,7 +4,7 @@ export const routeMetadata={
  '/estimativa':{title:'Quanto pedir de bolo e docinhos? | Nandices Confeitaria',description:'Veja uma estimativa de bolo e docinhos para sua comemoração. Quantidades e valores finais são confirmados pela Nandices.'},
  '/caixa-degustacao':{title:'Caixa Degustação | Nandices Confeitaria',description:'Prove os 12 sabores da Nandices em uma Caixa Degustação com 12 unidades. Valor de R$ 65,00 e antecedência mínima de 7 dias.',image:'/images/products/degustacao/caixa-catalogo-azul.webp'},
  '/personalizados':{title:'Docinhos personalizados | Nandices Confeitaria',description:'Brigadeiros e outros doces personalizados para sua comemoração. Pedido mínimo de 50 unidades e antecedência mínima de 45 dias.',image:'/images/products/personalizados/docinhos-personalizados-futebol-960.webp'},
- '/frete':{title:'Consulta de frete no DF | Nandices Confeitaria',description:'Consulte pelo CEP a estimativa de entrega da Nandices no Distrito Federal. A Nanda confirma frete, retirada e detalhes pelo WhatsApp.'},
+ '/frete':{title:'Consulta de frete no DF | Nandices Confeitaria',description:'Consulte pelo CEP a estimativa de entrega da Nandices no DF. A Nanda confirma frete, retirada e os detalhes pelo WhatsApp.'},
 };
 
 // Update only when route content or metadata receives a significant change.
